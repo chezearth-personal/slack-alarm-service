@@ -42,7 +42,7 @@ The project was regularly committed and the main commits have been tagged, this 
 
 The project was initiated with the Swagger codegen, an npm package that was installed globally
 ```bash
-$ npm install -g Swagger
+$ npm install -g swagger
 
 $ swagger project create users-tasks-manager
 ```
