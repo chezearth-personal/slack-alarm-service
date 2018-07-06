@@ -44,7 +44,7 @@ The project was initiated with the Swagger codegen, an npm package that was inst
 ```bash
 $ npm install -g swagger
 
-$ swagger project create users-tasks-manager
+$ swagger project create api
 ```
 This README was written up. The project, which is just a 'Hello World' at this stage, can be tested by running `$ swagger project start api` and using the supplied command `$ curl http://127.0.0.1:10010/hello?name=My-name`. The Swagger spec file can then be edited with
 ```bash
