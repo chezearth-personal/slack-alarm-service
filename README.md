@@ -52,7 +52,7 @@ This README was written up. The project, which is just a 'Hello World' at this s
 ```bash
 $ swagger project edit api
 ```
-### 2. Editing the Swagger Spec
+### 2. Edited the Swagger Spec
 
 > Label: swagger-spec-with-mocks
 
@@ -86,17 +86,25 @@ $ curl http://127.0.0.1:3000/alarms/asdg
 ```
 Note, the api still has the `GET /hello` route example installed by the codegen, this will be deleted later.
 
-### 3. Re-organise and Simplify the Directory Structure, Adding in the Gulp and Typescript Config Files
+### 3. Re-organised the Directory Structure, added in the Gulp, TypeScript and Docker config Files
 
-> Label: re-organise-directory-structure
+> Label: re-organised-directory-structure
 
-Typescript and Gulp installed. `gulpfile.js`, `tsconfig.json` and `src/api/` and `src/alarm` directoris added. These two directories each have a `server.ts` file that will compile to Javascript `server.js` files in the `dist/api/` and `dist/alarm/` directories, respectively. The orginal `./app.js` file has been changed to `src/api/server.ts` and modified to 'Typescript-style'. The gulpfile does two things: if any `.ts` file in `src/` changes, it will recompile; and if the swagger.yaml file changes it will regenerate the `payloads.d.ts` file in `src/api/controllers/`, which provides the payload type definitions for TypeScript.
+Typescript was installed. The `tsconfig.json` file, `src/api/` and `src/alarm` directoris were added. The orginal `api/app.js` file has been changed to `src/api/server.ts` and modified to 'Typescript-style'. The `src/alarm/` directory also has a `server.ts` file and both will compile to Javascript `server.js` files in the `dist/api/` and `dist/alarm/` directories, respectively.
 
-The files and directories have been extensively rearranged. The previous `api/` directory is removed, with the `package.json` and `tsconfig.json` files in the project root. Swagger-node does not like the Swagger spec (`swagger.yaml`) file to be moved (it can be moved but the new location must be placed in the swagger_swagger_swaggerFile env variable); so it has remained in the path `./api/swagger/swagger.yaml`.
+Gulp was installed. The gulpfile does two things: it watches `*.ts` files in the `src/` directory, recompiling on changes; and it watches the `api/swagger/swagger.yaml`, regenerating the `payloads.d.ts` file in `src/api/controllers/` on changes. The latter provides handy payload type definitions for TypeScript.
 
-This means the `$ swagger project start` and `$ swagger project edit` commands no longer take a directory argument (it was previously `api`).
+The files and directories have been extensively rearranged. The previous `api/` directory is removed, with the `package.json` and `tsconfig.json` files in the project root. Swagger-node does not like the Swagger spec file (`swagger.yaml`) to be placed in a path other than `./api/swagger` (it can be moved but the new location must be exported to the `swagger_swagger_fileName` env variable -- see https://github.com/swagger-api/swagger-node/issues/373). To keep things simple, I have kept it the original path.
 
-Lastly, the docker container builds have started, orchestrated by docker-compose. For this, there are two Dockerfiles (`Dockerfile-api` and `Dockerfile-alarm`) which set and start the API and Alarm node apps in separate containers. Since the Alarm has not yet been created, a simple recursive loop with a time has been set up to log a short message repeatedly for testing the containers. To see this test, use
+This means the `$ swagger project start` and `$ swagger project edit` commands no longer take a directory argument (it was previously `api`). Hence,
+```bash
+$ cd path/to/slack-alarm
+$ swagger project start # to start the server daemon (it will restart after any chganges are saved and gulp has recompiled)
+$ swagger project start -m # to start with mocks
+$ swagger project edit # to edit the swagger spec in the browser
+```
+
+Lastly, the initial docker container builds were made, and are orchestrated by docker-compose. For this, there are two Dockerfiles (`Dockerfile-api` and `Dockerfile-alarm`) which are used to build the API and Alarm node apps in separate containers. Since the Alarm has not yet been created, a simple recursive loop with a time has been set up to log a short message repeatedly for testing the containers. To see this test, use
 ```bash
 $ docker-compose up
 ```
