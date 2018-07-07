@@ -58,15 +58,15 @@ $ swagger project edit api
 
 Project port changed to `3000`, base route remains `api/`. Test file copied over for easy ref.
 
-The `/alarm`, `/alarm/{id}` routes added in along with the `Alarm` definition. The swagger spec can be tested on the editor with the supplied dummy data in `api/mocks/alarm.js`.
+The `POST /alarms`, `GET /alarms` and `GET /alarms/{id}` routes added in along with the `Alarm` object definition. The swagger spec can be tested on the editor with the supplied dummy data in `./api/mocks/alarm.js`.
 
 The API be tested on mocks by starting the project with
 ```bash
-$ swagger project start -m api
+$ cd path/to/slack-alarm/ && swagger project start -m api
 ```
 and then, to test from the editor enter:
 ```bash
-$ swagger project edit api
+$ cd path/to/slack-alarm/ && swagger project edit api
 ```
 in another terminal window and on the editor in the browser, click `Try this operation` in the panel on the right.
 
@@ -84,4 +84,4 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"id":"123ade-34","nam
 $ curl -i -H "Content-Type: application/json" -X POST -d '{"id":"'$(uuid -v1)'","name":"Message to be sent to Slack","alertAt":"'$(date -u +%d/%m/%Y %H:%M:%S)'"}' http://127.0.0.1:3000/alarms
 $ curl http://127.0.0.1:3000/alarms/asdg
 ```
-Note, the api still has the `GET hello/` route example installed by the codegen, this will be deleted later.
+Note, the api still has the `GET /hello` route example installed by the codegen, this will be deleted later.
