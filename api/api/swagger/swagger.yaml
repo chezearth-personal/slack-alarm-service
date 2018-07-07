@@ -4,9 +4,9 @@ info:
   title: Hello World App
 # during dev, should point to your local machine
 host: localhost:10010
-# basePath prefixes all resource paths 
+# basePath prefixes all resource paths
 basePath: /
-# 
+#
 schemes:
   # tip: remove http to make production-grade
   - http
@@ -42,6 +42,61 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /alarms:
+    x-swagger-router-controller: alarm
+    post:
+      description: accepts a new alarm and returns same
+      operationId: createAlarm
+      parameters:
+        - in: body
+          name: alarm
+          description: the alarm details to be stored
+          required: true
+          schema:
+            $ref: '#/definitions/Alarm'
+      responses:
+        '201':
+          description: success, new alarm created
+          schema:
+            $ref: '#/definitions/Alarm'
+        default:
+          description: error, failed
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    get:
+      description: lists all alarms
+      operationId: getAllAlarms
+      responses:
+        '200':
+          description: success, got list of alarms
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Alarm'
+        default:
+          description: error, failed to get alarms list
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /alarms/{id}:
+    x-swagger-router-controller: alarm
+    get:
+      description: get alarm details
+      operationId: getAlarmDetails
+      parameters:
+        - name: id
+          in: path
+          description: get details of a particular alarm
+          required: true
+          type: string
+      responses:
+        '200':
+          description: success, got alarm
+          schema:
+            $ref: '#/definitions/Alarm'
+        default:
+          description: error, failed to get alarm details
+          schema:
+            $ref: '#/definitions/ErrorResponse'
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
@@ -52,6 +107,20 @@ definitions:
     properties:
       message:
         type: string
+  Alarm:
+    required:
+      - id
+      - name
+      - alertAt
+    properties:
+      id:
+        type: string
+        pattern: '^[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}'
+      name:
+        type: string
+      alertAt:
+        type: string
+        format: date-time
   ErrorResponse:
     required:
       - message

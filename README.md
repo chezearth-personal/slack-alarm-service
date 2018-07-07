@@ -18,8 +18,9 @@ The scheduler is set to check the database every second, although this can be ch
 
 1. Nodejs 8.1 with the appropriate updated npm package manager
 1. Docker (latest version) with at least docker-compose version 2.
+1. The e2e and mocks tests that are run with curl use the `uuid` bash command to generate the required UUIDs in the `POST alarm/` request bodies and `GET alarm/{id}` query strings. The command can be installed with Homebrew (`brew install ossp-uuid`) on MacOS or `apt-get uuid` on Debian/Ubuntu linux
 
-If running as standalone apps, then MongoDB will need to be installed on the host machine and the `development.yml` and `test.yml` config files changed to include the appropriate connection strings.
+If the project is run as standalone app instead of in containers, then MongoDB will need to be installed on the host machine and the `development.yml` and `test.yml` config files changed to include the appropriate connection strings.
 
 ## How the Project was Constructed
 
@@ -49,4 +50,28 @@ $ swagger project create api
 This README was written up. The project, which is just a 'Hello World' at this stage, can be tested by running `$ swagger project start api` and using the supplied command `$ curl http://127.0.0.1:10010/hello?name=My-name`. The Swagger spec file can then be edited with
 ```bash
 $ swagger project edit api
+```
+### 2. Editing the Swagger Spec
+
+> Label: swagger-spec-with-mocks
+
+Project port changed to `3000`, base route remains `api/`. Test file copied over for easy ref.
+
+The `/alarm`, `/alarm/{id}` routes added in along with the `Alarm` definition. The API be tested on mocks by starting the project with
+```bash
+$ swagger project start -m
+```
+and calling, e.g.,
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"id":"'$(uuid -v1)'","name":"Message to be sent to Slack","alertAt":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}' http://127.0.0.1:3000/alarms
+$ curl http://127.0.0.1:3000/alarms
+$ curl http://127.0.0.1:3000/alarms/$(uuid -v1)
+```
+The data returned are just mocks but swagger validates the UUID pattern in the `id` field and the date pattern in the `alertedAt` field.
+
+The following requests all fail:
+```bash
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"id":"123ade-34","name":"Message to be sent to Slack","alertAt":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}' http://127.0.0.1:3000/alarms
+$ curl -i -H "Content-Type: application/json" -X POST -d '{"id":"'$(uuid -v1)'","name":"Message to be sent to Slack","alertAt":"'$(date -u +%d/%m/%Y %H:%M:%S)'"}' http://127.0.0.1:3000/alarms
+$ curl http://127.0.0.1:3000/alarms/asdg
 ```
