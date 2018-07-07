@@ -7,6 +7,7 @@ swagger:
   defaultPipe: null
   swaggerControllerPipe: swagger_controllers  # defines the standard processing pipe for controllers
 
+
   # values defined in the bagpipes key are the bagpipes pipes and fittings definitions
   # (see https://github.com/apigee-127/bagpipes)
   bagpipes:
@@ -14,12 +15,13 @@ swagger:
     _router:
       name: swagger_router
       mockMode: false
-      mockControllersDirs: [ api/mocks ]
-      controllersDirs: [ api/controllers ]
+      mockControllersDirs: [ dist/api/mocks ]
+      controllersDirs: [ dist/api/controllers ]
 
     _swagger_validate:
       name: swagger_validator
       validateResponse: true
+
 
     # pipe for all swagger-node controllers
     swagger_controllers:

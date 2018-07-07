@@ -1,0 +1,17 @@
+version: "2"
+
+services:
+
+  rest-api:
+    image: node-api
+    build:
+      context: .
+      dockerfile: Dockerfile-api
+    ports:
+      - "3000:3000"
+
+  alarm:
+    image: mode-alarm
+    build:
+      context: .
+      dockerfile: Dockerfile-alarm

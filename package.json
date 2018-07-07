@@ -1,0 +1,33 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Slack Alarm Micorservice API",
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "main": "dist/api/server.js",
+  "dependencies": {
+    "express": "^4.12.3",
+    "swagger-express-mw": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.16.0",
+    "@types/node": "^10.5.2",
+    "@types/swagger-express-mw": "^0.7.6",
+    "eslint": "^5.0.1",
+    "gulp": "^4.0.0",
+    "gulp-typescript": "^4.0.2",
+    "js-yaml": "^3.12.0",
+    "should": "^7.1.0",
+    "supertest": "^1.0.0",
+    "sw2dts": "^2.6.0",
+    "typescript": "^2.9.2"
+  },
+  "scripts": {
+    "clean": "rimraf /dist",
+    "start": "node dist/api/server.js",
+    "alarm": "node dist/alarm/server.js",
+    "test": "swagger project test"
+  }
+}

@@ -85,3 +85,19 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"id":"'$(uuid -v1)'",
 $ curl http://127.0.0.1:3000/alarms/asdg
 ```
 Note, the api still has the `GET /hello` route example installed by the codegen, this will be deleted later.
+
+### 3. Re-organise and Simplify the Directory Structure, Adding in the Gulp and Typescript Config Files
+
+> Label: re-organise-directory-structure
+
+Typescript and Gulp installed. `gulpfile.js`, `tsconfig.json` and `src/api/` and `src/alarm` directoris added. These two directories each have a `server.ts` file that will compile to Javascript `server.js` files in the `dist/api/` and `dist/alarm/` directories, respectively. The orginal `./app.js` file has been changed to `src/api/server.ts` and modified to 'Typescript-style'. The gulpfile does two things: if any `.ts` file in `src/` changes, it will recompile; and if the swagger.yaml file changes it will regenerate the `payloads.d.ts` file in `src/api/controllers/`, which provides the payload type definitions for TypeScript.
+
+The files and directories have been extensively rearranged. The previous `api/` directory is removed, with the `package.json` and `tsconfig.json` files in the project root. Swagger-node does not like the Swagger spec (`swagger.yaml`) file to be moved (it can be moved but the new location must be placed in the swagger_swagger_swaggerFile env variable); so it has remained in the path `./api/swagger/swagger.yaml`.
+
+This means the `$ swagger project start` and `$ swagger project edit` commands no longer take a directory argument (it was previously `api`).
+
+Lastly, the docker container builds have started, orchestrated by docker-compose. For this, there are two Dockerfiles (`Dockerfile-api` and `Dockerfile-alarm`) which set and start the API and Alarm node apps in separate containers. Since the Alarm has not yet been created, a simple recursive loop with a time has been set up to log a short message repeatedly for testing the containers. To see this test, use
+```bash
+$ docker-compose up
+```
+which will show the of logs of the two containers on the terminal.
