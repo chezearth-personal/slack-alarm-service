@@ -84,3 +84,4 @@ $ curl -i -H "Content-Type: application/json" -X POST -d '{"id":"123ade-34","nam
 $ curl -i -H "Content-Type: application/json" -X POST -d '{"id":"'$(uuid -v1)'","name":"Message to be sent to Slack","alertAt":"'$(date -u +%d/%m/%Y %H:%M:%S)'"}' http://127.0.0.1:3000/alarms
 $ curl http://127.0.0.1:3000/alarms/asdg
 ```
+Note, the api still has the `GET hello/` route example installed by the codegen, this will be deleted later.
