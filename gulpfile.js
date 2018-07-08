@@ -21,9 +21,9 @@ gulp.task("payloads", () => {
   return sw2dts.convert(swaggerDoc, options)
     .then(dts => fs.writeFileSync(
       './src/api/controllers/payloads.d.ts',
-      `\n// The contents of this file are auto-generated from swagger.yaml definitions.\n// Do not edit directly.\n\n${dts}`
+      `\n// The contents of this file are auto-generated from swagger.yaml definitions.\n// Do not edit directly.\n\n${dts}\n`
     ))
-    .catch(e => console.log(e));
+    .catch(e => console.log(e))
 });
 
 gulp.task("scripts", () => {

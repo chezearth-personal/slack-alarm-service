@@ -10,8 +10,8 @@ services:
     ports:
       - "3000:3000"
 
-  alarm:
-    image: mode-alarm
+  alarm-server:
+    image: node-alarm
     build:
       context: .
       dockerfile: Dockerfile-alarm

@@ -43,7 +43,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
   /alarms:
-    x-swagger-router-controller: alarm
+    x-swagger-router-controller: alarms
     post:
       description: accepts a new alarm and returns same
       operationId: createAlarm
@@ -78,7 +78,7 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
   /alarms/{id}:
-    x-swagger-router-controller: alarm
+    x-swagger-router-controller: alarms
     get:
       description: get alarm details
       operationId: getAlarmDetails

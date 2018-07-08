@@ -1,8 +1,12 @@
- callLogger = (count: number) => {
-  return setTimeout(() => {
-    console.log(`This is still TODO. Iteration ${count}`);
-    return count < 20 ? callLogger(count + 1) : count;
-  }, 500);
-}
+"use strict";
 
-callLogger(0);
+import { ScheduledItem } from "./helpers/Scheduler";
+import * as schedule from "node-schedule";
+
+
+
+new schedule.scheduleJob('*/3 * * * * *', () => {
+
+  console.log('This is the 3-second scheduled item');
+  
+});
