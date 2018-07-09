@@ -130,3 +130,4 @@ $ npm test
 ```bash
 $ swagger project test
 ```
+Used the 'config' library with three config files (`default.yaml`, `development.yaml` and `test.yaml`) to choose configurations according to the  environment. Testing in a `test` environment (`NODE_ENV`), and uses a different database from running.
