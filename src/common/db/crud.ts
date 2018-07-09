@@ -1,7 +1,7 @@
 "use strict";
 
-import * as config from "config";
 import { expect } from "chai";
+import { get } from "config";
 import {
   Db,
   ObjectID,
@@ -17,8 +17,8 @@ import { Alarm } from "../types/payloads"
 
 
 // Mongo DB connection. Returned as a promise which resolves quite quickly. The promise is awaited each time the connection is used.
-const url: string = config.get("mongoUrl") || "mongodb://127.0.0.1:27017";
-const dbName: string = config.get("database") || "alarmServer";
+const url: string = get("mongoUrl") || "mongodb://127.0.0.1:27017";
+const dbName: string = get("database") || "alarmServer";
 export const mongoDb: Promise<DbClient> = connectDb(url, dbName);
 
 
