@@ -34,7 +34,7 @@ SwaggerExpress.create(swaggerConfig, function(err, swaggerExpress) {
   app.listen(port);
 
 
-  if(env !== "test") myStream.write("info", `::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "SERVER STARTED and listening on localhost:${port}" "${env} environment"`);
+  if(env !== "test") myStream.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "SERVER STARTED and listening on localhost:${port}" "${env} environment"`);
 
 });
 

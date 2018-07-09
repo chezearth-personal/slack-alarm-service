@@ -14,7 +14,7 @@ describe("Winston logging (writes this test to a file, which is deleted again)",
 
   it("should write the correct formated output", (done) => {
     const dateNow = (new Date).toISOString();
-    myStream.write("info", `[${dateNow}] "test item"`);
+    myStream.write(`[${dateNow}] "test item"`);
     myStream.done(() => readFile(
       "test.log",
       "utf8",

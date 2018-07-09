@@ -37,7 +37,7 @@ const logger: winston.LoggerInstance = util.getEnv('NODE_ENV') !== "test"
 
 class MyStream {
 
-  write(level: string, text: string): void {
+  write(text: string, level?: string): void {
     logger.log(level || "info", text.trim());
   }
 
