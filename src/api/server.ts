@@ -1,7 +1,11 @@
-'use strict';
+"use strict";
 
-import * as express from 'express';
-import * as SwaggerExpress from 'swagger-express-mw';
+import * as config from "config";
+import * as express from "express";
+import * as morgan from "morgan";
+import * as SwaggerExpress from "swagger-express-mw";
+
+import { myStream } from "../common/helpers/winston";
 
 
 
@@ -16,6 +20,12 @@ SwaggerExpress.create(swaggerConfig, function(err, swaggerExpress) {
 
   if (err) { throw err; }
 
+  // unless in test env, use morgan to log requests
+  if(config.util.getEnv("NODE_ENV") !== "test") {
+    app.use(morgan(`:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"` , { stream: myStream }));
+  }
+
+
   // install middleware
   swaggerExpress.register(app);
 
@@ -23,9 +33,8 @@ SwaggerExpress.create(swaggerConfig, function(err, swaggerExpress) {
   app.listen(port);
 
 
-  if (swaggerExpress.runner.swagger.paths['/hello']) {
-    console.log('try this:\ncurl http://127.0.0.1:' + port + '/hello?name=Scott');
-  }
+  if(config.util.getEnv("NODE_ENV") !== "test") myStream.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "SERVER STARTED and listening on localhost:${port}" "${config.util.getEnv("NODE_ENV")} environment"`);
+
 });
 
 

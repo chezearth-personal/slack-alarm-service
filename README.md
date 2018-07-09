@@ -131,3 +131,11 @@ $ npm test
 $ swagger project test
 ```
 Used the 'config' library with three config files (`default.yaml`, `development.yaml` and `test.yaml`) to choose configurations according to the  environment. Testing in a `test` environment (`NODE_ENV`), and uses a different database from running.
+
+### 5. Logging and environments
+
+> Label: logging-and-environments
+
+Logging is done with popular libraries `Winston` and `Morgan`, which are disabled during testing. The Apache format is used, and the output is written to stdout.
+
+The `swagger project start` phrase sets the node environment to "development". The node environment is set to "production" on the docker images. A `production.yaml` config file has been added.
