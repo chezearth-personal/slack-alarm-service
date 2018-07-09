@@ -8,4 +8,4 @@ import {
 
 import {
   Alarm
-} from "./payloads";
+} from "../../common/types/payloads";

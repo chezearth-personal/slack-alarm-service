@@ -6,11 +6,12 @@ import {
   Db,
   ObjectID,
   WriteOpResult,
+  DeleteWriteOpResultObject
 } from "mongodb";
 
-import { documentExists, toUnderscoreId, toId } from "./helpers";
+import { documentExists, payload2doc, doc2payload } from "./helpers";
 import { connectDb, DbClient } from "./connector";
-import { Alarm } from "../types/payloads.d.ts"
+import { Alarm } from "../types/payloads"
 //import { mongoDb } from '../server';
 
 
@@ -22,7 +23,7 @@ export const mongoDb: Promise<DbClient> = connectDb(url, dbName);
 
 
 // CRUD operations
-export async function create<T>(col: string, doc: T): Promise<T> {
+export async function create(col: string, doc: Alarm): Promise<Alarm> {
 
   try {
 
@@ -30,9 +31,9 @@ export async function create<T>(col: string, doc: T): Promise<T> {
     const db: Db = (await mongoDb).db;
     const res: WriteOpResult = await db
       .collection(col)
-      .insertOne(toUnderscoreId(doc));
+      .insertOne(payload2doc(doc));
 
-    return toId(res.ops["0"]);
+    return doc2payload(res.ops["0"]);
 
   } catch(e) {
 
@@ -54,7 +55,7 @@ export async function getMany(col, query, projection, sort) {
       .find(query, projection)
       .toArray();
 
-    return results.map(e => toId(e));
+    return results.map(e => doc2payload(e));
 
   } catch(e) {
 
@@ -76,7 +77,7 @@ export async function getOne(col, id: string, otherQueryParams: any, projection:
       .collection(col)
       .findOne(opQuery);
 
-    return result === null ? result : toId(result);
+    return result === null ? result : doc2payload(result);
 
   } catch(e) {
 

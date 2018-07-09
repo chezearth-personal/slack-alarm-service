@@ -4,7 +4,7 @@
 
 API to accept and list alarms and a webhook and post them onto Slack.
 
-> A small detail: I have installed typescript and gulp locally and `./node_modules/.bin` to my `PATH`. If, for example, Typescript or Gulp are installed globally, the application should work but parameters on the `tsconfig.json` and `gulpfile.js` may need changing.
+> A small detail: I have installed typescript and gulp locally and added `./node_modules/.bin` to my `PATH` variable. If, for example, Typescript or Gulp are installed globally, the application should work but parameters on the `tsconfig.json` and `gulpfile.js` may need changing.
 
 The DB used is MongoDB and the project is configured to connect to a single containerised instance, without authentication. The Mongo container has a volume set to the `./data` local directory.
 

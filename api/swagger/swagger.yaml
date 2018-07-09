@@ -108,14 +108,22 @@ definitions:
       message:
         type: string
   Alarm:
+    type: object
+    allOf:
+      - type: object
+        required:
+          - id
+        properties:
+          id:
+            type: string
+            pattern: '^[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}'
+      - $ref: '#/definitions/AlarmDetail'
+  AlarmDetail:
+    type: object
     required:
-      - id
       - name
       - alertAt
     properties:
-      id:
-        type: string
-        pattern: '^[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}'
       name:
         type: string
       alertAt:
