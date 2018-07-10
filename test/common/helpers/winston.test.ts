@@ -2,7 +2,7 @@
 
 import * as chai from "chai"; // for .ts test
 import { readFile, unlink } from "fs";
-import * as mocha from "mocha";
+//import * as mocha from "mocha";
 
 import { myStream } from "../../../src/common/helpers/winston";
 

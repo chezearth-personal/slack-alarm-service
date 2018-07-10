@@ -7,10 +7,6 @@ export interface Alarm {
     name: string;
     alertAt: string; // date-time
 }
-export interface AlarmDetail {
-    name: string;
-    alertAt: string; // date-time
-}
 export interface ErrorResponse {
     message: string;
 }

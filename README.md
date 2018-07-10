@@ -14,6 +14,15 @@ The e2e tests ...
 
 The scheduler is set to check the database every second, although this can be changed in the configs.
 
+Each step in the project has a
+
+> Label:
+
+and this label corresponds to a tag the git index, which can be rewound with
+```bash
+$ git checkout <label>
+```
+
 ## Prerequisites
 
 1. Nodejs 8.1 with the appropriate updated npm package manager
@@ -139,3 +148,13 @@ Used the 'config' library with three config files (`default.yaml`, `development.
 Logging is done with popular libraries `Winston` and `Morgan`, which are disabled during testing. The Apache format is used, and the output is written to stdout.
 
 The `swagger project start` phrase sets the node environment to "development". The node environment is set to "production" on the docker images. A `production.yaml` config file has been added.
+
+### 6. Develop Unit Tests and Write the Code for the Controllers
+
+> Label: develop-tests-and-code-for-controllers
+
+`alarms.test.js` was developed with `alarms.ts` for alarms controller. Tests are run off the mock data returned by the `findAlarms()` function in the `alarm/mocks/alarms.ts` module.
+
+The data are created and read from the test database. The environment variable, `CLEAN_TEST`, determines if all data are cleaned out at the end of the test. This variable needs to be set to 'true', 'yes', 't' or 'y' (case insensitive) for this to happen -- any other value will leave the data in after the test.
+
+To test the routing properly, the test checks the GET-all-user-tasks call for _each_ user. The struture of the test logic dictates that these calls are made at the end of the tasks suite.

@@ -1,6 +1,6 @@
 "use strict";
 
-import { expect } from "chai";
+import * as assert from "assert";
 import { get } from "config";
 import {
   Db,
@@ -9,10 +9,9 @@ import {
   DeleteWriteOpResultObject
 } from "mongodb";
 
-import { documentExists, payload2doc, doc2payload } from "./helpers";
+import { notExists, payload2doc, doc2payload } from "./helpers";
 import { connectDb, DbClient } from "./connector";
 import { Alarm } from "../types/payloads"
-//import { mongoDb } from '../server';
 
 
 
@@ -27,12 +26,19 @@ export async function create(col: string, doc: Alarm): Promise<Alarm> {
 
   try {
 
-    expect(await documentExists(col, doc.id), "a document with the supplied UUID already exists").to.be.false; // makes sure we don't already have an alarm with the UUID
+    console.log("incoming document =", doc);
+    console.log("modified document =", payload2doc(doc));
+
+    // makes sure we don't already have an alarm with the UUID
+    assert.ok(await notExists(col, doc.id), "a document with the supplied UUID already exists");
     const db: Db = (await mongoDb).db;
     const res: WriteOpResult = await db
       .collection(col)
       .insertOne(payload2doc(doc));
 
+    console.log('res.result =', res.result);
+    // console.log('res.ops =', res.ops);
+    // console.log('returned document =', doc2payload(res.ops["0"]));
     return doc2payload(res.ops["0"]);
 
   } catch(e) {

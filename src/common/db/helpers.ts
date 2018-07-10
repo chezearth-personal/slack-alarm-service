@@ -3,7 +3,7 @@
 import { Db, ObjectID } from "mongodb";
 
 import { getOne } from "./crud";
-import { Alarm, AlarmDetail } from "../types/payloads"
+import { Alarm } from "../types/payloads"
 
 
 const buildField = <T>(key: string, value: any, o?: T) => {
@@ -15,12 +15,13 @@ const buildField = <T>(key: string, value: any, o?: T) => {
 }
 
 
-export async function documentExists(col: string, id: string): Promise<boolean> {
+export async function notExists(col: string, id: string): Promise<boolean> {
 
   try {
 
     const result: any = await getOne(col, id, {}, {});
-    return result !== null;
+    console.log(result);
+    return result === null;
 
   } catch(e) {
 
@@ -34,9 +35,11 @@ const string2date = (key: string, value: any) => key === "alertAt"
   ? buildField(key, new Date(value))
   : buildField(key, value);
 
+
 const date2string = (key: string, value: any) => key === "alertAt"
   ? buildField(key, value.toISOString())
   : buildField(key, value);
+
 
 export const payload2doc = <T>(payload: T) => Object.keys(payload)
   .reduce((obj, key) => Object.assign(

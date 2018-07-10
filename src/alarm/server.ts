@@ -6,7 +6,7 @@ import { ScheduledItem } from "./helpers/Scheduler";
 import { myStream } from "../common/helpers/winston";
 
 
-new schedule.scheduleJob('*/3 * * * * *', () => {
+schedule.scheduleJob('*/3 * * * * *', () => {
 
   myStream.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "This is the 3-second scheduled item"`);
 
