@@ -8,7 +8,7 @@ import {
   doc2payload
 } from "../../../dist/api/models/alarms";
 import { AlarmDb } from "../../common/types/docs"
-import { getMany } from "../../../dist/common/db/crud";
+import { getMany, deleteAll } from "../../../dist/common/db/crud";
 
 // rewire is handy for 'importing' functions that are not exported
 const rewire = require("rewire");
@@ -30,6 +30,27 @@ let payloadDb: AlarmDb;
 let alarmsDb: AlarmDb[];
 
 describe(`'models/alarms.ts' tests`, function() {
+
+
+  after(async function() {
+
+    try {
+
+      if(
+        process.env.CLEAN_TEST
+          && ["true", "yes", "y", "t"]
+            .includes(process.env.CLEAN_TEST.toLowerCase())
+      ) await deleteAll("alarms");
+      return Promise.resolve();
+
+    } catch(e) {
+
+      return Promise.reject(e);
+
+    }
+
+  });
+
 
   describe("buildField() test", function() {
 
@@ -74,11 +95,7 @@ describe(`'models/alarms.ts' tests`, function() {
 
       try {
 
-        const res_id: boolean = await isUnique(
-          { _id: "a4a1da54-82fa-11e8-98d8-cffa00ec7eee" }
-        );
         const res_alertAt: boolean = await isUnique({ alertAt: new Date });
-        expect(res_id).to.equal(true);
         expect(res_alertAt).to.equal(true);
         return Promise.resolve();
 

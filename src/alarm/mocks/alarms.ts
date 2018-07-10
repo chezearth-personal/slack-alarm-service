@@ -4,6 +4,7 @@ import * as uuidv1 from "uuid/v4";
 
 import { Alarm } from "../../common/types/payloads";
 
+
 export function findAlarms(): Array<Alarm> {
   return [
     {

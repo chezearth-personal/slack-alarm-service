@@ -4,11 +4,13 @@
     "module": "commonjs",
     "outDir": "dist/",
   },
-  "include": [
-    "src/**/*.ts"
-  ],
   "exclude": [
+    ".git",
+    "api",
+    "config",
+    "dist",
     "node_modules",
+    "resoucres",
     "src/**/*.test.ts"
   ]
 }

@@ -11,6 +11,4 @@ COPY . .
 RUN npm install \
   && ./node_modules/.bin/tsc
 
-ENV NODE_ENV="production"
-
 CMD [ "npm", "start" ]

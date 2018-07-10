@@ -21,44 +21,8 @@ const alarmsList = findAlarms();
 
 describe("'controllers/tasks.ts' tests. API requests", function() {
 
+
   let alarm_id: string; // variable to hold a task's id for the 'GET all' request
-
-  before(async function() {
-
-    try {
-
-      // const del = await deleteAll("alarms");
-
-      return Promise.resolve();
-
-    } catch(e) {
-
-      return Promise.reject(e);
-
-    }
-
-  });
-
-
-  after(async function() {
-
-    try {
-
-      if(
-        process.env.CLEAN_TEST
-          && ["true", "yes", "y", "t"]
-            .includes(process.env.CLEAN_TEST.toLowerCase())
-      ) await deleteAll("alarms");
-      return Promise.resolve();
-
-    } catch(e) {
-
-      return Promise.reject(e);
-
-    }
-
-  });
-
 
   describe("#POST 6 alarms", function() {
 

@@ -14,7 +14,7 @@ export class ScheduledItem {
     const hours: number = alert.getHours();
     const mins: number = alert.getMinutes();
     const secs: number = alert.getSeconds();
-//    schedule.scheduleJob(`${secs} ${mins} ${hours} ${date} ${month} ${year}`, cb)
+    schedule.scheduleJob(`${secs} ${mins} ${hours} ${date} ${month} ${year}`, cb)
 
   }
 

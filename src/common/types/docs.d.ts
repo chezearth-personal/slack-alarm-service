@@ -10,7 +10,4 @@ export interface AlarmDb {
 export interface ErrorResponse {
     message: string;
 }
-export interface HelloWorldResponse {
-    message: string;
-}
 

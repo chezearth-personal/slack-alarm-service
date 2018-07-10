@@ -149,12 +149,14 @@ Logging is done with popular libraries `Winston` and `Morgan`, which are disable
 
 The `swagger project start` phrase sets the node environment to "development". The node environment is set to "production" on the docker images. A `production.yaml` config file has been added.
 
-### 6. Develop Unit Tests and Write the Code for the Controllers
+### 6. Develop Unit Tests and Code for the Controllers and Models
 
 > Label: develop-tests-and-code-for-controllers
 
-`alarms.test.js` was developed with `alarms.ts` for alarms controller. Tests are run off the mock data returned by the `findAlarms()` function in the `alarm/mocks/alarms.ts` module.
+`alarms.test.js` was developed with `alarms.ts` for the alarms controller. Tests are run off the mock data returned by the `findAlarms()` function in the `alarm/mocks/alarms.ts` module.
+
+The `helper.ts` file in `common/db/` was moved to a new `api/models/` directory because the functionality there is primarily concerned with data shape and structure (e.g. `id`s to `_id`s, date strings to Date objects. The `alarms.ts` module in models also handles uniqueness of the id (the uniqueness of the UUIDs in the id field are handles by MongoDB itself) and alertAt field (only a single alert can go off at a particular time). These data considerations are called by the controller and no longer by the db CRUD operations.
 
 The data are created and read from the test database. The environment variable, `CLEAN_TEST`, determines if all data are cleaned out at the end of the test. This variable needs to be set to 'true', 'yes', 't' or 'y' (case insensitive) for this to happen -- any other value will leave the data in after the test.
 
-To test the routing properly, the test checks the GET-all-user-tasks call for _each_ user. The struture of the test logic dictates that these calls are made at the end of the tasks suite.
+The last task in this section was to upgrade the docker network to include a mongodb container, which has a volume linked to a local project directory -- `mongo-data/` (which is not in the repository).
