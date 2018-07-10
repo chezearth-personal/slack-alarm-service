@@ -160,3 +160,5 @@ The `helper.ts` file in `common/db/` was moved to a new `api/models/` directory 
 The data are created and read from the test database. The environment variable, `CLEAN_TEST`, determines if all data are cleaned out at the end of the test. This variable needs to be set to 'true', 'yes', 't' or 'y' (case insensitive) for this to happen -- any other value will leave the data in after the test.
 
 The last task in this section was to upgrade the docker network to include a mongodb container, which has a volume linked to a local project directory -- `mongo-data/` (which is not in the repository).
+
+This is a good time to remove the boilerplate `hello` path, controller and definitions.
