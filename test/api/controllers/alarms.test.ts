@@ -36,7 +36,7 @@ describe("'controllers/tasks.ts' tests. API requests", function() {
 
       return Promise.reject(e);
 
-
+    }
 
   });
 
