@@ -51,6 +51,6 @@
     "clean": "rimraf ./dist",
     "start": "node dist/api/server.js",
     "alarm": "node dist/alarm/server.js",
-    "test": "export NODE_ENV=test && export CLEAN_TEST=n && mocha -c --reporter spec --exit --require ts-node/register 'test/common/**/*.test.ts' 'test/api/controllers/alarms.test.ts'"
+    "test": "export NODE_ENV=test && export CLEAN_TEST=n && mocha -c --reporter spec --exit --require ts-node/register 'test/common/**/*.test.ts' 'test/api/**/*.test.ts'"
   }
 }

@@ -7,7 +7,6 @@ swagger:
   defaultPipe: null
   swaggerControllerPipe: swagger_controllers  # defines the standard processing pipe for controllers
 
-
   # values defined in the bagpipes key are the bagpipes pipes and fittings definitions
   # (see https://github.com/apigee-127/bagpipes)
   bagpipes:
@@ -21,7 +20,6 @@ swagger:
     _swagger_validate:
       name: swagger_validator
       validateResponse: true
-
 
     # pipe for all swagger-node controllers
     swagger_controllers:
@@ -38,3 +36,9 @@ swagger:
       name: swagger_raw
 
 # any other values in this file are just loaded into the config for application access...
+
+#mongoUrl: mongodb://127.0.0.1:27017
+#database: usersTasks
+#next_execute_date_time: 2018-05-20T13:30:17.738Z
+#schedule_task_execute: 00 */1 * * * *
+#port: 3000

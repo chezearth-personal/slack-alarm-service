@@ -1,5 +1,6 @@
 "use strict";
 
+import * as assert from "assert";
 import {
   create,
   getMany,
@@ -7,43 +8,37 @@ import {
 } from "../../common/db/crud";
 
 import { Alarm } from "../../common/types/payloads";
+import { AlarmDb } from "../../common/types/docs";
 import { myStream } from "../../common/helpers/winston";
+import { isUnique, payload2doc, doc2payload } from "../models/alarms";
 
 
-const errorLog: string = `                 - - [${(new Date()).toISOString()}] `
+const errorPrefix: string = `                 - - [${(new Date()).toISOString()}] `
 
-/*
-function fixDateTime(date_time: string) {
-  return date_time.indexOf('T') === 10 && date_time.indexOf('Z') === date_time.length - 1
-  ? date_time
-  : (
-      date_time.substring(0, date_time.indexOf(' '))
-      + 'T'
-      + date_time.substring(date_time.indexOf(' ') + 1, date_time.length)
-      + 'Z'
-    )
-}
-*/
 
 export async function createAlarm(req, res, next): Promise<void> {
 
   try {
 
-    const value = Object.assign({}, req.swagger.params.alarm.value)
+    const reqDoc: AlarmDb = Object.assign({}, payload2doc(req.swagger.params.alarm.value))
 
-    console.log('Alarm being POSTed:')
-    console.log(req.swagger.params);
-    const doc: Alarm = await create("alarms", value);
-    // console.log("Document returned by the DB:", doc);
+    // the '_id' and 'alertAt' fields must be unique (cannot enter twice)
+    assert.ok(await isUnique({ _id: reqDoc._id }), "an alarm with the UUID already exists");
+    assert.ok(await isUnique({ alertAt: reqDoc.alertAt }), "an alarm with the alert date and time already exists");
+
+
+    const doc: AlarmDb = await create("alarms", reqDoc);
+
+    const resPayload: Alarm = doc2payload(doc);
     res
       .status(201)
       .type("application/json")
-      .json(doc)
+      .json(resPayload)
       .end()
 
   } catch(e) {
 
-    myStream.write(`${errorLog} "${e.message}" "${e.status}"
+    myStream.write(`${errorPrefix} "${e.message}" "${e.status}"
 ${e.stack}`,"error")
     res
       .status(404)
@@ -60,21 +55,22 @@ export async function getAllAlarms(req, res, next): Promise<void> {
 
   try {
 
-    const docs: Alarm[] = await getMany(
+    const docs: AlarmDb[] = await getMany(
       "alarms",
       {},
       {},
       {}
     );
+    const resPayload: Alarm[] = docs.map(doc => doc2payload(doc));
     res
       .status(200)
       .type("application/json")
-      .json(docs)
+      .json(resPayload)
       .end();
 
   } catch(e) {
 
-    myStream.write(`${errorLog} "${e.message}" "${e.status}"
+    myStream.write(`${errorPrefix} "${e.message}" "${e.status}"
 ${e.stack}`,"error")
     res
       .status(404)
@@ -91,21 +87,22 @@ export async function getAlarmDetails(req, res, next): Promise<void> {
 
   try {
 
-    const doc: Alarm = await getOne(
+    const doc: AlarmDb = await getOne(
       "alarms",
       req.swagger.params.id.value,
       {},
       {}
     );
+    const resPayload: Alarm = doc2payload(doc);
     res
       .status(200)
       .type("application/json")
-      .json(doc)
+      .json(resPayload)
       .end();
 
   } catch(e) {
 
-    myStream.write(`${errorLog} "${e.message}" "${e.status}"
+    myStream.write(`${errorPrefix} "${e.message}" "${e.status}"
 ${e.stack}`,"error")
     res
       .status(404)

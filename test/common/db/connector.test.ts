@@ -4,7 +4,7 @@ import * as chai from "chai"; // for .ts tests
 import * as mocha from "mocha";
 import * as config from "config";
 
-import { mongoDb } from "../../../dist/common/db/crud.js";
+import { mongoDb } from "../../../dist/api/server";
 import { connectDb } from "../../../dist/common/db/connector";
 
 const expect = chai.expect;

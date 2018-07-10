@@ -1,9 +1,7 @@
 "use strict";
 
-import { Db, ObjectID } from "mongodb";
-
-import { getOne } from "./crud";
-import { Alarm } from "../types/payloads"
+import { getCount } from "../../common/db/crud";
+import { Alarm } from "../../common/types/payloads"
 
 
 const buildField = <T>(key: string, value: any, o?: T) => {
@@ -15,13 +13,12 @@ const buildField = <T>(key: string, value: any, o?: T) => {
 }
 
 
-export async function notExists(col: string, id: string): Promise<boolean> {
+export async function isUnique(obj: any): Promise<boolean> {
 
   try {
 
-    const result: any = await getOne(col, id, {}, {});
-    console.log(result);
-    return result === null;
+    const result: any = await getCount("alarms", obj);
+    return result === 0;
 
   } catch(e) {
 

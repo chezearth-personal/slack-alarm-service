@@ -1,17 +1,13 @@
 "use strict";
 
 import * as chai from "chai"; // for .ts test
-import * as mocha from "mocha";
-
-
 import { ObjectID } from "mongodb";
 
-
 import {
-  notExists,
+  isUnique,
   payload2doc,
   doc2payload
-} from "../../../dist/common/db/helpers";
+} from "../../../dist/api/models/alarms";
 
 
 const rewire = require("rewire");
@@ -57,14 +53,40 @@ describe(`'db/helper.ts' tests`, function() {
 
   });
 
-  describe("'notExists()' test", function() {
+  describe("'isUnique()' test", function() {
 
-    it("should have an empty object", async function() {
+    it("should be TRUE for unique '_id's or 'alertAt's", async function() {
 
       try {
 
-        const res: boolean = await notExists("users", "a4a1da54-82fa-11e8-98d8-cffa00ec7eee");
-        expect(res).to.equal(true);
+        const res_id: boolean = await isUnique(
+          { _id: "a4a1da54-82fa-11e8-98d8-cffa00ec7eee" }
+        );
+        const res_alertAt: boolean = await isUnique({ alertAt: new Date });
+        expect(res_id).to.equal(true);
+        expect(res_alertAt).to.equal(true);
+        return Promise.resolve();
+
+      } catch(e) {
+
+        return Promise.reject(e);
+
+      }
+
+    });
+
+    it("should be FALSE for 'id's or 'alertAt's that already exist in the database", async function() {
+
+      try {
+
+        const res_id: boolean = await isUnique(
+          { _id: "63206aa6-83b2-11e8-b4f1-3f12081e3629" }
+        );
+        const res_alertAt: boolean = await isUnique(
+          { alertAt: new Date("2018-07-09T20:01:52.475Z") }
+        );
+        expect(res_id).to.equal(false);
+        expect(res_alertAt).to.equal(false);
         return Promise.resolve();
 
       } catch(e) {
