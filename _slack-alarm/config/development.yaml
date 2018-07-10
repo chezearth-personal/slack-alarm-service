@@ -1,0 +1,9 @@
+mongoUrl: mongodb://127.0.0.1:27017
+database: alarmServer
+next_execute_delay_min: 2018-05-20T13:30:17.738Z
+cron_check_alarms: "*/1 * * * * *"
+port: 3000
+slack_webhook_url: "https://hooks.slack.com/services/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"
+slack_channel: "#general"
+slack_username: "webhookbot"
+slack_icon_emoji: ":ghost:"
