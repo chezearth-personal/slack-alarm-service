@@ -1,9 +1,0 @@
-node_modules
-.gitignore
-docker-compose.yml
-gulpfile.js
-README.md
-src/alarm
-.git
-*.test.ts
-mongo
