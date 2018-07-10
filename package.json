@@ -28,6 +28,8 @@
     "@types/morgan": "^1.7.35",
     "@types/node": "^10.5.2",
     "@types/node-schedule": "^1.2.2",
+    "@types/request": "^2.47.1",
+    "@types/request-promise": "^4.1.41",
     "@types/rewire": "^2.5.28",
     "@types/swagger-express-mw": "^0.7.6",
     "@types/winston": "^2.3.9",
@@ -52,6 +54,6 @@
     "clean": "rimraf ./dist",
     "start": "node dist/api/server.js",
     "alarm": "node dist/alarm/server.js",
-    "test": "export NODE_ENV=test && export CLEAN_TEST=yes && mocha -c --reporter spec --exit --require ts-node/register 'src/common/**/*.test.ts' 'src/api/**/*.test.ts'"
+    "test": "export NODE_ENV=test && export CLEAN_TEST=yes && mocha -c --reporter spec --exit --require ts-node/register 'src/common/**/*.test.ts' 'src/api/db/*.test.ts' 'src/api/controllers/*.test.ts' 'src/api/models/*.test.ts' 'src/alarm/**/*.test.ts'"
   }
 }
