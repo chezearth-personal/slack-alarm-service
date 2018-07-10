@@ -13,3 +13,4 @@ export interface ErrorResponse {
 export interface HelloWorldResponse {
     message: string;
 }
+

@@ -3,21 +3,20 @@
 import * as chai from "chai";
 import * as util from "util";
 
+import { findAlarms } from "../../../dist/alarm/mocks/alarms";
+import { deleteAll } from "../../../dist/common/db/crud";
+
+
 const chaiHttp: Chai.ExpectStatic = require("chai-http");
 
 const app: Express.Application = require("../../../dist/api/server").default;
 
 chai.use(chaiHttp);
-
-
 const expect = chai.expect;
 
-import { deleteAll } from "../../../dist/common/db/crud";
-//import { findAlarms } from "../../../dist/alarm/mocks/alarms";
 
-//const alarmsList = findAlarms();
-const alarmsList = require("../../resources/alarm-data.json");
-//console.log(alarmsList);
+const alarmsList = findAlarms();
+// const alarmsList = require("../../resources/alarm-data.json");
 
 
 describe("'controllers/tasks.ts' tests. API requests", function() {
@@ -61,34 +60,31 @@ describe("'controllers/tasks.ts' tests. API requests", function() {
   });
 
 
-  describe("#POST 4 alarms", function() {
+  describe("#POST 6 alarms", function() {
 
     alarmsList.forEach((elem, i) => {
 
-      if(i > 1) {
+      it(`should create alarm ${i}`, async function() {
 
-        it(`should create alarm ${i}`, async function() {
+        try {
 
-          try {
+          const res: ChaiHttp.Response = await chai
+            .request(app)
+            .post("/alarms")
+            .type("application/json")
+            .send(alarmsList[i])
+          expect(res).to.have.status(201);
+          expect(res).to.be.json;
+          expect(res.body).to.deep.equal(elem);
+          return Promise.resolve();
 
-            const res: ChaiHttp.Response = await chai
-              .request(app)
-              .post("/alarms")
-              .type("application/json")
-              .send(alarmsList[i])
-            expect(res).to.have.status(201);
-            expect(res).to.be.json;
-            expect(res.body).to.deep.equal(elem);
-            return Promise.resolve();
+        } catch(e) {
 
-          } catch(e) {
+          return Promise.reject(e);
 
-            return Promise.reject(e);
+        }
 
-          }
-        });
-
-      }
+      });
 
     });
 
@@ -103,9 +99,9 @@ describe("'controllers/tasks.ts' tests. API requests", function() {
           const res: ChaiHttp.Response = await chai
             .request(app)
             .get("/alarms");
+          alarm_id = res.body[5].id;
           expect(res).to.have.status(200);
-          expect(res.body).to.have.length(alarmsList.length);
-          alarm_id = res.body[1].id;
+          expect(res.body).to.have.length(alarmsList.length + 2);
         return Promise.resolve();
 
       } catch(e) {
@@ -130,7 +126,7 @@ describe("'controllers/tasks.ts' tests. API requests", function() {
         expect(res).to.have.status(200);
         expect(res.body).to.deep.equal(Object.assign(
           {},
-          alarmsList[1],
+          alarmsList[3], // alarmList #3 === databaseList #5, 2 extra alarms stored
         ));
         return Promise.resolve();
 

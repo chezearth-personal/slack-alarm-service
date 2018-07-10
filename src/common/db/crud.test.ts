@@ -4,20 +4,20 @@ import * as chai from "chai";
 import * as mocha from "mocha";
 import { DeleteWriteOpResultObject } from "mongodb";
 
+import { findAlarms } from "../../../dist/alarm/mocks/alarms";
+import { payload2doc } from "../../../dist/api/models/alarms";
 import {
   create,
   deleteAll,
   getMany,
   getOne,
 } from "../../../dist/common/db/crud";
-import { payload2doc } from "../../../dist/api/models/alarms";
-import { AlarmDb } from "../../../src/common/types/docs"
+import { AlarmDb } from "../../../src/common/types/docs";
 
-const alarmList = require("../../resources/alarm-data.json")
+//const alarmList = require("../../resources/alarm-data.json")
 
 // mocks are useful for testing, call the function to instantiate the time
-//import { findAlarms } from "../../../dist/alarm/mocks/alarms"
-//const alarmList = findAlarms();
+const alarmList = findAlarms();
 
 const expect: Chai.ExpectStatic = chai.expect;
 

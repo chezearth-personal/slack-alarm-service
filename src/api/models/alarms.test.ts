@@ -1,37 +1,52 @@
 "use strict";
 
 import * as chai from "chai"; // for .ts test
-import { ObjectID } from "mongodb";
 
 import {
   isUnique,
   payload2doc,
   doc2payload
 } from "../../../dist/api/models/alarms";
+import { AlarmDb } from "../../common/types/docs"
+import { getMany } from "../../../dist/common/db/crud";
 
-
+// rewire is handy for 'importing' functions that are not exported
 const rewire = require("rewire");
-
-const helperFuncs = rewire("../../../dist/common/db/helpers");
+const helperFuncs = rewire("../../../dist/api/models/alarms");
 const buildField = helperFuncs.__get__("buildField");
 
 
 const expect: Chai.ExpectStatic = chai.expect;
 
-
 const alertAt: string = new Date((new Date).valueOf() + 120000).toISOString();
-const payload = {
+const testPayload = {
   id: "d4fb628e-82f9-11e8-8080-cf75bf620a4c",
   name: "Freddie Mercury",
   alertAt: alertAt
 };
 
 
-let payloadDb;
+let payloadDb: AlarmDb;
+let alarmsDb: AlarmDb[];
 
-describe(`'db/helper.ts' tests`, function() {
+describe(`'models/alarms.ts' tests`, function() {
 
   describe("buildField() test", function() {
+
+    before(async function() {
+
+      try {
+
+        alarmsDb = await getMany("alarms", {}, {}, {});
+        return Promise.resolve();
+
+      } catch(e) {
+
+        return Promise.reject(e);
+
+      }
+
+    });
 
     it("should make an object out of two strings", function() {
 
@@ -42,7 +57,7 @@ describe(`'db/helper.ts' tests`, function() {
 
     it("should assign a key and value to an existing object", function() {
 
-      expect(buildField("sense", "nonsense", payload)).eqls({
+      expect(buildField("sense", "nonsense", testPayload)).eqls({
         id: "d4fb628e-82f9-11e8-8080-cf75bf620a4c",
         name: "Freddie Mercury",
         alertAt: alertAt,
@@ -80,10 +95,10 @@ describe(`'db/helper.ts' tests`, function() {
       try {
 
         const res_id: boolean = await isUnique(
-          { _id: "63206aa6-83b2-11e8-b4f1-3f12081e3629" }
+          { _id: alarmsDb[2]._id }
         );
         const res_alertAt: boolean = await isUnique(
-          { alertAt: new Date("2018-07-09T20:01:52.475Z") }
+          { alertAt: alarmsDb[4].alertAt }
         );
         expect(res_id).to.equal(false);
         expect(res_alertAt).to.equal(false);
@@ -103,13 +118,13 @@ describe(`'db/helper.ts' tests`, function() {
   describe("'payload2doc()' test", function() {
 
     it(`should change the 'id' field in the payload to '_id'`, function() {
-      expect(payload2doc(payload)._id).to.equal("d4fb628e-82f9-11e8-8080-cf75bf620a4c");
-      expect(payload2doc(payload)).eqls({
+      expect(payload2doc(testPayload)._id).to.equal("d4fb628e-82f9-11e8-8080-cf75bf620a4c");
+      expect(payload2doc(testPayload)).eqls({
         _id: "d4fb628e-82f9-11e8-8080-cf75bf620a4c",
         name: "Freddie Mercury",
         alertAt: new Date(alertAt)
       });
-      payloadDb = Object.assign({}, payload2doc(payload));
+      payloadDb = Object.assign({}, payload2doc(testPayload));
     });
 
   });
@@ -119,7 +134,7 @@ describe(`'db/helper.ts' tests`, function() {
 
     it(`should change the '_id' field in the database document to 'id'`, function() {
       expect(doc2payload(payloadDb).id).to.equal("d4fb628e-82f9-11e8-8080-cf75bf620a4c");
-      expect(doc2payload(payloadDb)).eqls(payload);
+      expect(doc2payload(payloadDb)).eqls(testPayload);
     });
 
   });
