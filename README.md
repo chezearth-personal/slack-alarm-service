@@ -162,3 +162,15 @@ The data are created and read from the test database. The environment variable, 
 The last task in this section was to upgrade the docker network to include a mongodb container, which has a volume linked to a local project directory -- `mongo-data/` (which is not in the repository).
 
 This is a good time to remove the boilerplate `hello` path, controller and definitions.
+
+### 7. Develop Unit Tests and Write the Code for the Alarm Scheduler
+
+> Label: develop-tests-and-code-for-worker
+
+_Note_: This functionality is included directly into the main API because of project specification. However, in real-world practice, the scheduler worker should be a daemon on its own, which will allow the horizontal scaling of the server.
+
+The assumption from the specification is that `next_execute_date_time` is a project constant, not a task field. This is assumed because none of the API calls include it as a field, which would have to be the case (e.g. if a task is 'scheduled'.). The project constant is set in the config files and can also be set in the environment (``)
+
+Used the `node-schedule` library to handle scheduling. The `scheduleJob()` method takes a string that follows the `cron` pattern, except that seconds can be included as well, and a callback. The callback contains the `job.executeTask()` method, which is tested in the suite.
+
+Logging the scheduled job simply uses the built-in `util` library. Server call logging uses `morgan`.

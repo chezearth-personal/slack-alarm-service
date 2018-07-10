@@ -8,7 +8,7 @@ import {
   doc2payload
 } from "../../../dist/api/models/alarms";
 import { AlarmDb } from "../../common/types/docs"
-import { getMany, deleteAll } from "../../../dist/common/db/crud";
+import { getMany, deleteAll } from "../../../dist/api/db/crud";
 
 // rewire is handy for 'importing' functions that are not exported
 const rewire = require("rewire");
@@ -30,26 +30,6 @@ let payloadDb: AlarmDb;
 let alarmsDb: AlarmDb[];
 
 describe(`'models/alarms.ts' tests`, function() {
-
-
-  after(async function() {
-
-    try {
-
-      if(
-        process.env.CLEAN_TEST
-          && ["true", "yes", "y", "t"]
-            .includes(process.env.CLEAN_TEST.toLowerCase())
-      ) await deleteAll("alarms");
-      return Promise.resolve();
-
-    } catch(e) {
-
-      return Promise.reject(e);
-
-    }
-
-  });
 
 
   describe("buildField() test", function() {
@@ -91,7 +71,7 @@ describe(`'models/alarms.ts' tests`, function() {
 
   describe("'isUnique()' test", function() {
 
-    it("should be TRUE for unique '_id's or 'alertAt's", async function() {
+    it("should be TRUE for unique 'alertAt's", async function() {
 
       try {
 
@@ -107,17 +87,13 @@ describe(`'models/alarms.ts' tests`, function() {
 
     });
 
-    it("should be FALSE for 'id's or 'alertAt's that already exist in the database", async function() {
+    it("should be FALSE for alertAt's that already exist in the database", async function() {
 
       try {
 
-        const res_id: boolean = await isUnique(
-          { _id: alarmsDb[2]._id }
-        );
         const res_alertAt: boolean = await isUnique(
           { alertAt: alarmsDb[4].alertAt }
         );
-        expect(res_id).to.equal(false);
         expect(res_alertAt).to.equal(false);
         return Promise.resolve();
 

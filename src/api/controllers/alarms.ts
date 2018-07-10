@@ -1,11 +1,12 @@
 "use strict";
 
 import * as assert from "assert";
+
 import {
   create,
   getMany,
   getOne
-} from "../../common/db/crud";
+} from "../db/crud";
 
 import { Alarm } from "../../common/types/payloads";
 import { AlarmDb } from "../../common/types/docs";

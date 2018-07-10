@@ -9,18 +9,8 @@ import {
   DeleteWriteOpResultObject
 } from "mongodb";
 
-//import { notExists, payload2doc, doc2payload } from "./helpers";
 import { mongoDb } from "../../api/server";
-//import { connectDb, DbClient } from "./connector";
-import { AlarmDb } from "../types/docs"
-
-
-
-// Mongo DB connection. Returned as a promise which resolves quite quickly.
-// The promise is awaited each time the connection is used.
-// const url: string = get("mongoUrl") || "mongodb://127.0.0.1:27017";
-// const dbName: string = get("database") || "alarmServer";
-// export const mongoDb: Promise<DbClient> = connectDb(url, dbName);
+import { AlarmDb } from "../../common/types/docs"
 
 
 // CRUD operations
