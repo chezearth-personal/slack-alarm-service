@@ -175,4 +175,4 @@ The docker image was rebult. I have left port 27007 open to the docker Mongo con
 
 The Slack settings are configurable; this includes the URL for the webhook, the desired Slack channel and even the image. Furthermore the polling interval for the scheduler can be changed.
 
-The Mongo container has a volume mounted in the `mongo/data` directory in the project root.
+The Mongo container is set to have a volume mounted in the `mongo/data` directory in the project root.
