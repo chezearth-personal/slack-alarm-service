@@ -4,14 +4,14 @@ import * as chai from "chai";
 import * as mocha from "mocha";
 import { DeleteWriteOpResultObject } from "mongodb";
 
-import { findAlarms } from "../../../dist/alarm/mocks/alarms";
-import { payload2doc } from "../../../dist/api/models/alarms";
 import {
   create,
   deleteAll,
   getMany,
   getOne,
 } from "../../../dist/common/db/crud";
+import { findAlarms } from "../../../dist/api/mocks/alarms";
+import { payload2doc } from "../../../dist/api/models/alarms";
 import { AlarmDb } from "../../../src/common/types/docs";
 
 //const alarmList = require("../../resources/alarm-data.json")
