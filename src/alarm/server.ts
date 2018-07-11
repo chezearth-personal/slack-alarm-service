@@ -10,6 +10,10 @@ import { myStream } from "../common/helpers/winston";
 import { AlarmDb } from "../common/types/docs";
 
 
+const env: string = config.util.getEnv("NODE_ENV");
+
+myStream.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "SERVER STARTED and polling database" "${env} environment"`)
+
 schedule.scheduleJob(config.get("cron_check_alarms"), async () => {
 
   //myStream.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "This is the 3-second scheduled item"`);
@@ -18,9 +22,13 @@ schedule.scheduleJob(config.get("cron_check_alarms"), async () => {
   //call controllers/getNewAlarms
   const alarmsToSend: AlarmDb[] = await getNewAlarms(new Date());
 
+  console.log("Alarms at this time:", alarmsToSend);
+
   //webhooks/postSlack function
   if(alarmsToSend.length > 0) {
+
     const res: string[] = await Promise.all(alarmsToSend.map(async (e) => await postSlack(e.name)));
+
     myStream.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "sending ${res.length} alarm messag${res.length > 1 ? 'e' : 'es'} to slack from '${config.get("slack_username")}' on the ${config.get("slack_channel")} channel" "results: ${res}"`);
   }
 
