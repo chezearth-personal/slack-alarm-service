@@ -22,8 +22,6 @@ schedule.scheduleJob(config.get("cron_check_alarms"), async () => {
   //call controllers/getNewAlarms
   const alarmsToSend: AlarmDb[] = await getNewAlarms(new Date());
 
-  console.log("Alarms at this time:", alarmsToSend);
-
   //webhooks/postSlack function
   if(alarmsToSend.length > 0) {
 

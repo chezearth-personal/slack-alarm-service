@@ -14,7 +14,6 @@ export async function getNewAlarms(init: Date): Promise<AlarmDb[]> {
     const min: number = Math.floor((new Date(init)).valueOf() / 1000) * 1000;
     const minTime: Date = new Date(min);
     const maxTime: Date = new Date(min + 1000);
-    console.log(init, min, minTime, maxTime);
 
     // console.log("init:", init, ", min:", minTime, ", max:", maxTime);
     const db: Db = (await mongoDb).db;
