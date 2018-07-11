@@ -1,10 +1,9 @@
 "use strict";
 
 import * as chai from "chai";
-import * as util from "util";
 
-import { findAlarms } from "../../../dist/alarm/mocks/alarms";
-import { deleteAll } from "../../../dist/common/db/crud";
+import { findAlarms } from "../../../dist/api/mocks/alarms";
+import { deleteAll } from "../../../dist/api/db/crud";
 
 
 const chaiHttp: Chai.ExpectStatic = require("chai-http");
@@ -16,7 +15,6 @@ const expect = chai.expect;
 
 
 const alarmsList = findAlarms();
-// const alarmsList = require("../../resources/alarm-data.json");
 
 
 describe("'controllers/tasks.ts' tests. API requests", function() {
@@ -28,27 +26,31 @@ describe("'controllers/tasks.ts' tests. API requests", function() {
 
     alarmsList.forEach((elem, i) => {
 
-      it(`should create alarm ${i}`, async function() {
+      if(i > 1) {
 
-        try {
+        it(`should create alarm ${i}`, async function() {
 
-          const res: ChaiHttp.Response = await chai
-            .request(app)
-            .post("/alarms")
-            .type("application/json")
-            .send(alarmsList[i])
-          expect(res).to.have.status(201);
-          expect(res).to.be.json;
-          expect(res.body).to.deep.equal(elem);
-          return Promise.resolve();
+          try {
 
-        } catch(e) {
+            const res: ChaiHttp.Response = await chai
+              .request(app)
+              .post("/alarms")
+              .type("application/json")
+              .send(alarmsList[i])
+            expect(res).to.have.status(201);
+            expect(res).to.be.json;
+            expect(res.body).to.deep.equal(elem);
+            return Promise.resolve();
 
-          return Promise.reject(e);
+          } catch(e) {
 
-        }
+            return Promise.reject(e);
 
-      });
+          }
+
+        });
+
+      }
 
     });
 
@@ -63,9 +65,9 @@ describe("'controllers/tasks.ts' tests. API requests", function() {
           const res: ChaiHttp.Response = await chai
             .request(app)
             .get("/alarms");
-          alarm_id = res.body[5].id;
+          alarm_id = res.body[3].id;
           expect(res).to.have.status(200);
-          expect(res.body).to.have.length(alarmsList.length + 2);
+          expect(res.body).to.have.length(alarmsList.length);
         return Promise.resolve();
 
       } catch(e) {
