@@ -165,12 +165,14 @@ This is a good time to remove the boilerplate `hello` path, controller and defin
 
 ### 7. Develop Unit Tests and Write the Code for the Alarm Scheduler
 
-> Label: develop-tests-and-code-for-worker
+> Label: develop-alarm-scheduler
 
-_Note_: This functionality is included directly into the main API because of project specification. However, in real-world practice, the scheduler worker should be a daemon on its own, which will allow the horizontal scaling of the server.
+The Alarm Scheduler functions as a separate unit from the API. The scheduler polls the database every second checking to see if there are any alarms with the `alertAt` field falling into that second. If it finds any, it willsend the name to Slack.
 
-The assumption from the specification is that `next_execute_date_time` is a project constant, not a task field. This is assumed because none of the API calls include it as a field, which would have to be the case (e.g. if a task is 'scheduled'.). The project constant is set in the config files and can also be set in the environment (``)
+This work was trivial, although the alarm can handle more than one alarm per second; however a second is the tolerance for the Slack notification and the stored `alertAt` value.
 
-Used the `node-schedule` library to handle scheduling. The `scheduleJob()` method takes a string that follows the `cron` pattern, except that seconds can be included as well, and a callback. The callback contains the `job.executeTask()` method, which is tested in the suite.
+The docker image was rebult. I have left port 27007 open to the docker Mongo container incase the user wants to look in there (I left port 27017 alone as a local instance may be runnng as well).
 
-Logging the scheduled job simply uses the built-in `util` library. Server call logging uses `morgan`.
+The Slack settings are configurable; this includes the URL for the webhook, the desired Slack channel and even the image. Furthermore the polling interval for the scheduler can be changed.
+
+The Mongo container has a volume mounted in the `mongo/data` directory in the project root.
