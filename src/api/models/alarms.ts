@@ -1,6 +1,6 @@
 "use strict";
 
-import { getCount } from "../../common/db/crud";
+import { getCount } from "../db/crud";
 import { Alarm } from "../../common/types/payloads"
 
 
