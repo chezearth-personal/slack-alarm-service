@@ -1,30 +1,42 @@
 "use strict";
 
 import { Db, MongoClient } from "mongodb";
-import { myStream } from "../helpers/winston"
+import * as util from 'util';
+import { logger } from "../helpers/winston"
 
 export interface DbClient {
   db: Db,
   client: MongoClient
 }
 
+
 const errorPrefix: string = `                 - - [${(new Date()).toISOString()}] `
+
+
 
 export async function connectDb(uri: string, dbName: string): Promise<DbClient> {
 
-  try {
+  let dbClient: DbClient = { client: null, db: null };
+  const setTimeoutPromise = util.promisify(setTimeout);
+  while(dbClient.db === null) {
 
-    const client: MongoClient = await MongoClient.connect(uri, { useNewUrlParser: true });
-    return {
-      client: client,
-      db: client.db(dbName)
-    };
+    await setTimeoutPromise(1000, '');
 
-  } catch(e) {
+    try {
 
-    myStream.write(`${errorPrefix} "${e.message}" "${e.status}"
+      const client = await MongoClient.connect(uri, { useNewUrlParser: true });
+      dbClient.client = client;
+      dbClient.db = client.db(dbName);
+      return dbClient;
+
+    } catch(e) {
+
+
+      logger.write(`${errorPrefix} "${e.message}" "${e.status}"
 ${e.stack}`,"error")
-    return Promise.reject(e);
+      return Promise.reject(e);
+
+    }
 
   }
 

@@ -10,7 +10,7 @@ import {
 
 import { Alarm } from "../../common/types/payloads";
 import { AlarmDb } from "../../common/types/docs";
-import { myStream } from "../../common/helpers/winston";
+import { logger } from "../../common/helpers/winston";
 import { isUnique, payload2doc, doc2payload } from "../models/alarms";
 
 
@@ -41,7 +41,7 @@ export async function createAlarm(req, res, next): Promise<void> {
 
   } catch(e) {
 
-    myStream.write(`${errorPrefix} "${e.message}" "${e.status}"
+    logger.write(`${errorPrefix} "${e.message}" "${e.status}"
 ${e.stack}`,"error")
     res
       .status(404)
@@ -73,7 +73,7 @@ export async function getAllAlarms(req, res, next): Promise<void> {
 
   } catch(e) {
 
-    myStream.write(`${errorPrefix} "${e.message}" "${e.status}"
+    logger.write(`${errorPrefix} "${e.message}" "${e.status}"
 ${e.stack}`,"error")
     res
       .status(404)
@@ -105,7 +105,7 @@ export async function getAlarmDetails(req, res, next): Promise<void> {
 
   } catch(e) {
 
-    myStream.write(`${errorPrefix} "${e.message}" "${e.status}"
+    logger.write(`${errorPrefix} "${e.message}" "${e.status}"
 ${e.stack}`,"error")
     res
       .status(404)

@@ -2,6 +2,10 @@
 
 import * as config from "config";
 import * as rp from "request-promise";
+import { logger } from "../../common/helpers/winston"
+
+
+const errorPrefix: string = `                 - - [${(new Date()).toISOString()}] `
 
 
 const options = {
@@ -27,6 +31,8 @@ export async function postSlack(msg: string): Promise<string> {
 
   } catch(e) {
 
+    logger.write(`${errorPrefix} "${e.message}" "${e.status}"
+${e.stack}`,"error");
     return Promise.reject(e);
 
   }

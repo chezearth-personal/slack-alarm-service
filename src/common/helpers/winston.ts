@@ -15,7 +15,7 @@ const options: winston.LoggerOptions = {
 };
 
 
-const logger: winston.LoggerInstance = util.getEnv('NODE_ENV') !== "test"
+const logging: winston.LoggerInstance = util.getEnv('NODE_ENV') !== "test"
   ? new (winston.Logger)({
     exitOnError: false,
     transports: [
@@ -35,15 +35,15 @@ const logger: winston.LoggerInstance = util.getEnv('NODE_ENV') !== "test"
   });
 
 
-class MyStream {
+class Stream {
 
   write(text: string, level?: string): void {
-    logger.log(level || "info", text.trim());
+    logging.log(level || "info", text.trim());
   }
 
-  done = (cb) => logger.on("logging", cb);
+  done = (cb) => logging.on("logging", cb);
 
 }
 
 
-export const myStream = new MyStream();
+export const logger = new Stream();

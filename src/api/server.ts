@@ -5,7 +5,7 @@ import * as express from "express";
 import * as morgan from "morgan";
 import * as SwaggerExpress from "swagger-express-mw";
 
-import { myStream } from "../common/helpers/winston";
+import { logger } from "../common/helpers/winston";
 
 import { connectDb, DbClient } from '../common/db/connector';
 
@@ -29,7 +29,7 @@ SwaggerExpress.create(swaggerConfig, function(err, swaggerExpress) {
 
   // unless in test env, use morgan to log requests
   if(env !== "test") {
-    app.use(morgan(`:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"` , { stream: myStream }));
+    app.use(morgan(`:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"` , { stream: logger }));
   }
 
 
@@ -43,7 +43,7 @@ SwaggerExpress.create(swaggerConfig, function(err, swaggerExpress) {
 
 
   // Start up message
-  if(env !== "test") myStream.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "SERVER STARTED and listening on localhost:${port}" "${env} environment"`);
+  if(env !== "test") logger.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "SERVER STARTED and listening on localhost:${port}" "${env} environment"`);
 
 });
 
