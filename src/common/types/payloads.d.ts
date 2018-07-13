@@ -6,7 +6,9 @@ export interface Alarm {
     id: string; // ^[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}
     name: string;
     alertAt: string; // date-time
+    iconEmoji?: string; // ^\:\w+\:$
 }
 export interface ErrorResponse {
     message: string;
 }
+

@@ -3,6 +3,7 @@
 import * as config from "config";
 import * as rp from "request-promise";
 import { logger } from "../../common/helpers/winston"
+import { AlarmDb } from "../../common/types/docs";
 
 
 const errorPrefix: string = `                 - - [${(new Date()).toISOString()}] `
@@ -20,11 +21,16 @@ const body = {
   username: config.get("slack_username"),
 }
 
-export async function postSlack(msg: string): Promise<string> {
+export async function postSlack(alarmDetails: AlarmDb): Promise<string> {
 
   try {
 
-    const completeBody = Object.assign({ text: msg }, body );
+    const completeBody = Object.assign(
+      {},
+      body,
+      { text: alarmDetails.name },
+      alarmDetails.iconEmoji ? { icon_emoji: alarmDetails.iconEmoji } : {}
+    );
     const completeOptions = Object.assign({}, options, { body: JSON.stringify(completeBody) });
     const res: string = await rp(completeOptions);
     return res;

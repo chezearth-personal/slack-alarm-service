@@ -1,6 +1,7 @@
 "use strict";
 
 import * as chai from "chai";
+import * as uuidv4 from "uuid";
 
 import { postSlack } from "./slack";
 
@@ -17,7 +18,7 @@ describe(`'webhooks/slack.ts' tests`, function() {
 
       try {
 
-        const res = await postSlack('This is the Test Suite testing the Slack sender')
+        const res = await postSlack({ _id: uuidv4().toString(), name: 'This is the Test Suite testing the Slack sender', alertAt: new Date(), iconEmoji: ":parrotdealwithit:"})
         expect(res).to.equal('ok');
         return Promise.resolve();
 

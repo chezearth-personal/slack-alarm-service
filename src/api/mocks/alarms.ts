@@ -1,6 +1,6 @@
 "use strict";
 
-import * as uuidv1 from "uuid/v4";
+import * as uuidv4 from "uuid/v4";
 
 import { Alarm } from "../../common/types/payloads";
 
@@ -37,17 +37,17 @@ export function findAlarms(): Array<Alarm> {
       alertAt: "2018-07-10T20:15:45.034Z"
     },
     {
-      id: uuidv1(),
+      id: uuidv4(),
       name: "Alarm number six",
       alertAt: new Date((new Date()).valueOf() + 120000).toISOString() // add 2 mins to now
     },
     {
-      id: uuidv1(),
+      id: uuidv4(),
       name: "Alarm number seven",
       alertAt: new Date((new Date()).valueOf() + 180000).toISOString() // add 5 mins to now
     },
     {
-      id: uuidv1(),
+      id: uuidv4(),
       name: "Alarm number eight",
       alertAt: new Date((new Date()).valueOf() + 240000).toISOString() // add 6 mins to now
     }
