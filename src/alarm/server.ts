@@ -26,7 +26,7 @@ schedule.scheduleJob(config.get("cron_check_alarms"), async () => {
 
     const res: string[] = await Promise.all(alarmsToSend.map(async (e) => await postSlack(e.name)));
 
-    logger.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "sending ${res.length} alarm messag${res.length > 1 ? 'e' : 'es'} to slack from '${config.get("slack_username")}' on the ${config.get("slack_channel")} channel" "results: ${res}"`);
+    logger.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "sending ${res.length} alarm messag${res.length > 1 ? 'e' : 'es'} with 'alertAt' times: ${alarmsToSend.map(alarm => alarm.alertAt)} to slack from '${config.get("slack_username")}' on the ${config.get("slack_channel")} channel" "results: ${res}"`);
   }
 
 });

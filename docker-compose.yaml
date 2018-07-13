@@ -2,6 +2,16 @@ version: "2"
 
 services:
 
+  mongo-db:
+    image: mongo:3.6
+    command: --smallfiles
+    restart: always
+    volumes:
+      - ./mongo/data:/data/db
+      - ./mongo/config:/data/config
+    ports:
+      - "27007:27017"
+
   rest-api:
     image: node-api
     build:
@@ -19,13 +29,3 @@ services:
       dockerfile: Dockerfile-alarm
     environment:
       NODE_ENV: production
-
-  mongo-db:
-    image: mongo:3.6
-    command: --smallfiles
-    restart: always
-    volumes:
-      - ./mongo/data:/data/db
-      - ./mongo/config:/data/config
-    ports:
-      - "27007:27017"

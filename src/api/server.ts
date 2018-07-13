@@ -29,7 +29,7 @@ SwaggerExpress.create(swaggerConfig, function(err, swaggerExpress) {
 
   // unless in test env, use morgan to log requests
   if(env !== "test") {
-    app.use(morgan(`:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"` , { stream: logger }));
+    app.use(morgan(`:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time[digits]ms` , { stream: logger }));
   }
 
 

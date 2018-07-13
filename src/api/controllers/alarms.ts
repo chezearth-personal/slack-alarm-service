@@ -24,10 +24,10 @@ export async function createAlarm(req, res, next): Promise<void> {
     const reqDoc: AlarmDb = Object.assign({}, payload2doc(req.swagger.params.alarm.value))
 
     // the 'alertAt' field must be unique (it cannot enter twice), ids are managed by MongoDB
-    assert.ok(
-      await isUnique({ alertAt: reqDoc.alertAt }),
-      "an alarm with the alert date and time already exists"
-    );
+    // assert.ok(
+      // await isUnique({ alertAt: reqDoc.alertAt }),
+      // "an alarm with the alert date and time already exists"
+    // );
 
 
     const doc: AlarmDb = await create("alarms", reqDoc);

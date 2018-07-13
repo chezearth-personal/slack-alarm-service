@@ -16,6 +16,7 @@ describe(`'db/connector.ts' tests`, function() {
   describe("test (db) connector function", function() {
 
     it("should get the db", async function() {
+      this.timeout(10000);
       try {
         const res = await connectDb("mongodb://localhost:27017", dbName);
         expect(res.db.databaseName).to.equal(dbName);
