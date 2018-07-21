@@ -38,7 +38,7 @@ SwaggerExpress.create(swaggerConfig, function(err, swaggerExpress) {
 
 
   // start listening
-  const port: string | number = config.get('port') || 3000;
+  const port: string | number = config.util.getEnv("PORT") || 3000;
   app.listen(port);
 
 

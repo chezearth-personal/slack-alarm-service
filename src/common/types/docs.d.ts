@@ -11,3 +11,4 @@ export interface AlarmDb {
 export interface ErrorResponse {
     message: string;
 }
+
