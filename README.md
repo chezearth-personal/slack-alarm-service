@@ -42,7 +42,7 @@ The project was regularly committed and the main commits have been tagged, this 
 1. Logging and environment configs
 1. Develop unit tests and write the code for the controllers
 1. Develop unit tests and write the code for the alarm server and its helpers
-1. Develop e2e tests, with SLack receiving the alarms.
+1. Develop e2e tests, with Slack receiving the alarms.
 1. Build the docker images and run them with docker-compose.
 
 
