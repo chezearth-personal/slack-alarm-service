@@ -1,7 +1,7 @@
 "use strict";
 
 import * as config from "config";
-import { Db, MongoClient } from "mongodb";
+// import { Db, MongoClient } from "mongodb";
 import * as schedule from "node-schedule";
 
 import { getNewAlarms } from "./db/crud";
@@ -32,10 +32,14 @@ schedule.scheduleJob(config.get("cron_check_alarms"), async () => {
 });
 
 
-// Mongo DB connection. Returned as a promise which resolves quite quickly. The promise is awaited each time the connection is used.
+// Mongo DB connection. Returned as a promise which resolves quite quickly. The promise is awaited each time the connection is used
 const url: string = config.get("mongoUrl") || "mongodb://127.0.0.1:27017";
 const dbName: string = config.get("database") || "alarmServer";
-export const mongoDb: Promise<DbClient> = connectDb(url, dbName)
-
-
-logger.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "SERVER STARTED and polling database" "${env} environment"`)
+export const mongoConn: Promise<void | DbClient> = connectDb(url, dbName)
+  .then(db => {
+    logger.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "SERVER STARTED and polling database" "${env} environment"`)
+    return db;
+  })
+  .catch(e => {
+    logger.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "SERVER STARTED but failed to connect to database" "${env} environment"`, 'error');
+  });

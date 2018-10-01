@@ -10,8 +10,23 @@ export interface DbClient {
 }
 
 
-const errorPrefix: string = `                 - - [${(new Date()).toISOString()}] `
+const errorPrefix: string = `- - [${(new Date()).toISOString()}] `
 
+
+export async function getDb(mongoConn: Promise<DbClient | void>): Promise<Db> {
+  try {
+    const dbClient: void | DbClient = await mongoConn;
+    if(!dbClient) throw {
+      message: 'No database connection - check MongoDb is running',
+      status: 400
+    };
+    return dbClient.db;
+  } catch(e) {
+    logger.write(`                 ${errorPrefix} "${e.message}" "${e.status}"
+${e.stack}`,"error");
+    return Promise.reject(e);
+  }
+}
 
 
 export async function connectDb(uri: string, dbName: string): Promise<DbClient> {
@@ -35,7 +50,7 @@ export async function connectDb(uri: string, dbName: string): Promise<DbClient> 
     } catch(e) {
 
 
-      logger.write(`${errorPrefix} "${e.message}" "${e.status}"
+      logger.write(`                 ${errorPrefix} "${e.message}" "${e.status}"
 ${e.stack}`,"error")
       return Promise.reject(e);
 

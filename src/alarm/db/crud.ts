@@ -2,7 +2,8 @@
 
 import { Db, DeleteWriteOpResultObject } from "mongodb";
 
-import { mongoDb } from "../server";
+import { mongoConn } from "../server";
+import { getDb } from '../../common/db/connector';
 import { AlarmDb } from "../../common/types/docs";
 import { logger } from "../../common/helpers/winston"
 
@@ -19,7 +20,8 @@ export async function getNewAlarms(init: Date): Promise<AlarmDb[]> {
     const maxTime: Date = new Date(min + 1000);
 
     // console.log("init:", init, ", min:", minTime, ", max:", maxTime);
-    const db: Db = (await mongoDb).db;
+    const db: Db = await getDb(mongoConn);
+    // const db: Db | undefined = (await mongoDb).db;
     const alarms: AlarmDb[] = await db
       .collection("alarms")
       .find({ alertAt: { "$gte": minTime, "$lt": maxTime } })
@@ -44,11 +46,14 @@ export async function getMany(col, query, projection, sort): Promise<AlarmDb[]> 
 
   try {
 
-    const db: Db = (await mongoDb).db;
+    // const db: Db = (await mongoDb).db;
+    const db: Db = await getDb(mongoConn);
 
     const results: AlarmDb[] = await db
       .collection(col)
-      .find(query, projection)
+      .find(query)
+      .project(projection)
+      .sort(sort)
       .toArray();
 
     return results;
@@ -67,7 +72,8 @@ export async function deleteAll(col: string): Promise<DeleteWriteOpResultObject[
 
   try {
 
-    const db: Db = (await mongoDb).db;
+    // const db: Db = (await mongoDb).db;
+    const db: Db = await getDb(mongoConn);
 
     const res: DeleteWriteOpResultObject = await db
       .collection(col)

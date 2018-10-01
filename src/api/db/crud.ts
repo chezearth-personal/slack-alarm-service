@@ -1,16 +1,17 @@
 "use strict";
 
-import * as assert from "assert";
-import { get } from "config";
+// import * as assert from "assert";
+// import { get } from "config";
 import {
   Db,
-  ObjectID,
+  // ObjectID,
   WriteOpResult,
   DeleteWriteOpResultObject
 } from "mongodb";
 
-import { mongoDb } from "../../api/server";
+import { mongoConn } from "../../api/server";
 import { AlarmDb } from "../../common/types/docs"
+import { getDb } from "../../common/db/connector"
 
 
 // CRUD operations
@@ -18,7 +19,8 @@ export async function create(col: string, doc: AlarmDb): Promise<AlarmDb> {
 
   try {
 
-    const db: Db = (await mongoDb).db;
+    // const db: Db = (await mongoDb).db;
+    const db: Db = await getDb(mongoConn);
     const res: WriteOpResult = await db
       .collection(col)
       .insertOne(doc);
@@ -38,11 +40,13 @@ export async function getMany(col, query, projection, sort): Promise<AlarmDb[]> 
 
   try {
 
-    const db: Db = (await mongoDb).db;
+    // const db: Db = (await mongoDb).db;
+    const db: Db =  await getDb(mongoConn);
 
     const results: AlarmDb[] = await db
       .collection(col)
       .find(query, projection)
+      .sort(sort)
       .toArray();
 
     return results;
@@ -60,9 +64,10 @@ export async function getOne(col, id: string, otherQueryParams: any, projection:
 
   try {
 
-    const db: Db = (await mongoDb).db;
+    // const db: Db = (await mongoDb).db;
+    const db: Db = await getDb(mongoConn);
 
-    const opQuery = Object.assign({ _id: id }, otherQueryParams);
+    const opQuery: any = Object.assign({ _id: id }, otherQueryParams);
     const result: AlarmDb = await db
       .collection(col)
       .findOne(opQuery);
@@ -82,7 +87,8 @@ export async function getCount(col, query): Promise<number> {
 
   try {
 
-    const db: Db = (await mongoDb).db;
+    // const db: Db = (await mongoDb).db;
+    const db: Db = await getDb(mongoConn);
 
     const num: number = await db
       .collection(col).find(query).count();
@@ -102,7 +108,8 @@ export async function deleteAll(col: string): Promise<DeleteWriteOpResultObject[
 
   try {
 
-    const db: Db = (await mongoDb).db;
+    // const db: Db = (await mongoDb).db;
+    const db: Db = await getDb(mongoConn);
 
     const res: DeleteWriteOpResultObject = await db
       .collection(col)
