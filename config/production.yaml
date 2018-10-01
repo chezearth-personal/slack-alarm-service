@@ -1,4 +1,4 @@
-mongoUrl: mongodb://slack-alarm_mongo-db_1:27017
+mongoUrl: mongodb://slack-alarm-service_mongo-db_1:27017
 database: alarmServer
 cron_check_alarms: "*/1 * * * * *"
 slack_webhook_url: "https://hooks.slack.com/services/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"

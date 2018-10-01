@@ -8,7 +8,7 @@ import { AlarmDb } from "../../common/types/docs";
 import { logger } from "../../common/helpers/winston"
 
 
-const errorPrefix: string = `                 - - [${(new Date()).toISOString()}] `
+// const errorPrefix: string = `[${(new Date()).toISOString()}] `
 
 
 export async function getNewAlarms(init: Date): Promise<AlarmDb[]> {
@@ -32,7 +32,8 @@ export async function getNewAlarms(init: Date): Promise<AlarmDb[]> {
 
   } catch(e) {
 
-    logger.write(`${errorPrefix} "${e.message}" "${e.status}"
+    // console.log("ERROR THROWN (crud.ts/getNewAlarms()):", e);
+    logger.write(`"${e.message}" "${e.status}"
 ${e.stack}`,"error");
     return Promise.reject(e);
 
