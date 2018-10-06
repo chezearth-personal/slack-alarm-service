@@ -14,7 +14,7 @@ import { connectDb, DbClient } from '../common/db/connector';
 
 const env: string = config.util.getEnv("NODE_ENV");
 
-function schedulerStart() {
+async function schedulerStart(): Promise<void> {
 
   schedule.scheduleJob(config.get("cron_check_alarms"), async () => {
 
@@ -51,7 +51,7 @@ const dbName: string = config.get("database") || "alarmServer";
 async function dBconnection(count): Promise<void | DbClient> {
 
   logger.write(`"Attempt ${count + 1} to connect to database" "${env} environment"`);
-  await connectDb(url, dbName, Number(config.get('database_connection_wait')))
+  return await connectDb(url, dbName, Number(config.get('database_connection_wait')))
     .then(db => {
 
       logger.write(`"Server started and polling database" "${env} environment"`);

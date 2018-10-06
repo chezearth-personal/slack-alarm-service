@@ -62,7 +62,7 @@ async function dBconnection(count: number): Promise<void | DbClient> {
 
   logger.write(`"Attempt: ${count + 1} to connect to database" "${env} environment"`);
 
-  connectDb(url, dbName, Number(config.get('database_connection_wait')))
+  return await connectDb(url, dbName, Number(config.get('database_connection_wait')))
 
     .then(db => {
       logger.write(`"SERVER STARTED and connected to database" "${env} environment"`);
