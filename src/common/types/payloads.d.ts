@@ -11,4 +11,3 @@ export interface Alarm {
 export interface ErrorResponse {
     message: string;
 }
-

@@ -10,9 +10,6 @@ export interface DbClient {
 }
 
 
-// const errorPrefix: string = `[${(new Date()).toISOString()}] `
-
-
 export async function getDb(mongoConn: Promise<DbClient | void>): Promise<Db> {
 
   try {
@@ -38,7 +35,7 @@ ${e.stack}`,"error");
 }
 
 
-export async function connectDb(uri: string, dbName: string): Promise<DbClient> {
+export async function connectDb(uri: string, dbName: string, wait: number): Promise<DbClient> {
 
   let dbClient: DbClient = { client: null, db: null };
   const setTimeoutPromise = util.promisify(setTimeout);
@@ -46,9 +43,7 @@ export async function connectDb(uri: string, dbName: string): Promise<DbClient> 
 
     try {
 
-      // console.log('STARTING TIMER', new Date());
-      await setTimeoutPromise(20000);
-      // console.log('STOPPING TIMER', new Date());
+      await setTimeoutPromise(wait);
 
       const client = await MongoClient.connect(uri, { useNewUrlParser: true });
       dbClient.client = client;

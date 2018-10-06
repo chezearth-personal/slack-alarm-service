@@ -1,9 +1,11 @@
+.git
+dist
+mongo
 node_modules
+.dockerignore
 .gitignore
 docker-compose.yml
+Dockerfile*
 gulpfile.js
 README.md
-src/alarm
-.git
-*.test.ts
-mongo
+**/*.test.ts
