@@ -55,7 +55,7 @@ async function swaggerCreate(): Promise<void> {
 
 
     // Start up message
-    if(env !== "test") logger.write(`[${(new Date()).toISOString()}] "SERVER STARTED and listening on localhost:${port}" "${env} environment"`);
+    if(env !== "test") logger.write(`[${(new Date()).toISOString()}] "Server started and listening on localhost:${port}" "${env} environment"`);
 
   });
 
@@ -63,12 +63,12 @@ async function swaggerCreate(): Promise<void> {
 
 async function dBconnection(count: number): Promise<void | DbClient> {
 
-  logger.write(`"Attempt ${count + 1} connecting to database" "${env} environment"`);
+  if(env !== "test") logger.write(`"Attempt ${count + 1} connecting to database" "${env} environment"`);
 
   return await connectDb(url, dbName, wait)
 
     .then(db => {
-      logger.write(`"Server connected to database" "${env} environment"`);
+      if(env !== "test") logger.write(`"Server connected to database" "${env} environment"`);
 
       // Now there is a database connection, we can call SwaggerExpress
       swaggerCreate();

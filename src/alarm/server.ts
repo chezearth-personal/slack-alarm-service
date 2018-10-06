@@ -34,7 +34,7 @@ async function schedulerStart(): Promise<void> {
 
         const res: string[] = await Promise.all(alarmsToSend.map(async (e) => await postSlack(e)));
 
-        logger.write(`"sending ${res.length} alarm messag${res.length > 1 ? 'e' : 'es'} with 'alertAt' times: ${alarmsToSend.map(alarm => alarm.alertAt)} to slack from '${slack_username}' on the ${slack_channel} channel" "results: ${res}"`);
+        if(env !== "test") logger.write(`"sending ${res.length} alarm messag${res.length > 1 ? 'e' : 'es'} with 'alertAt' times: ${alarmsToSend.map(alarm => alarm.alertAt)} to slack from '${slack_username}' on the ${slack_channel} channel" "results: ${res}"`);
       }
 
     } catch(e) {
@@ -54,11 +54,11 @@ const dbName: string = config.get("database") || "alarmServer";
 
 async function dBconnection(count): Promise<void | DbClient> {
 
-  logger.write(`"Attempt ${count + 1} connecting to database" "${env} environment"`);
+  if(env !== "test") logger.write(`"Attempt ${count + 1} connecting to database" "${env} environment"`);
   return await connectDb(url, dbName, wait)
     .then(db => {
 
-    logger.write(`"Server connected to and polling database" "${env} environment"`);
+    if(env !== "test") logger.write(`"Server connected to and polling database" "${env} environment"`);
     schedulerStart();
     return db;
 
