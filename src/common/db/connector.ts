@@ -38,7 +38,7 @@ ${e.stack}`,"error");
 }
 
 
-export async function connectDb(uri: string, dbName: string): Promise<DbClient> {
+export async function connectDb(uri: string, dbName: string, delay: number): Promise<DbClient> {
 
   let dbClient: DbClient = { client: null, db: null };
   const setTimeoutPromise = util.promisify(setTimeout);
@@ -47,7 +47,7 @@ export async function connectDb(uri: string, dbName: string): Promise<DbClient> 
     try {
 
       // console.log('STARTING TIMER', new Date());
-      await setTimeoutPromise(20000);
+      await setTimeoutPromise(delay);
       // console.log('STOPPING TIMER', new Date());
 
       const client = await MongoClient.connect(uri, { useNewUrlParser: true });
