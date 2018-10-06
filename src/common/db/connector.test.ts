@@ -4,8 +4,8 @@ import * as chai from "chai"; // for .ts tests
 import * as mocha from "mocha";
 import * as config from "config";
 
-import { mongoDb } from "../../../dist/api/server";
-import { connectDb } from "../../../dist/common/db/connector";
+import { mongoConn, Db } from "../../../dist/api/server";
+import { getDb, connectDb } from "../../../dist/common/db/connector";
 
 const expect = chai.expect;
 const dbName = process.env.DATABASE || config.get("database");
@@ -34,7 +34,8 @@ describe(`'db/connector.ts' tests`, function() {
 
     it("should get a connection object for the app", async function() {
       try {
-        const res = (await mongoDb).db;
+        const res: Db = await getDb(mongoConn);
+        // const res = (await mongoDb).db;
         expect(res.databaseName).to.equal('testAlarmServer');
         return Promise.resolve();
       } catch (e) {

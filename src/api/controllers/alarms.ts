@@ -1,6 +1,7 @@
 "use strict";
 
 import * as assert from "assert";
+import * as config from "config";
 
 import {
   create,
@@ -14,8 +15,8 @@ import { logger } from "../../common/helpers/winston";
 import { isUnique, payload2doc, doc2payload } from "../models/alarms";
 
 
-const errorPrefix: string = `                 - - [${(new Date()).toISOString()}] `
-
+// const errorPrefix: string = `                 - - [${(new Date()).toISOString()}] `
+const uniqueAlertAt: boolean = config.get("unique_alert_times")
 
 export async function createAlarm(req, res, next): Promise<void> {
 
@@ -23,11 +24,11 @@ export async function createAlarm(req, res, next): Promise<void> {
 
     const reqDoc: AlarmDb = Object.assign({}, payload2doc(req.swagger.params.alarm.value))
 
-    // the 'alertAt' field must be unique (it cannot enter twice), ids are managed by MongoDB
-    // assert.ok(
-      // await isUnique({ alertAt: reqDoc.alertAt }),
-      // "an alarm with the alert date and time already exists"
-    // );
+    // the 'alertAt' field may be constrained as unique (configurable), ids are managed by MongoDB
+    assert.ok(
+      !uniqueAlertAt || await isUnique({ alertAt: reqDoc.alertAt }),
+      "an alarm with the alert date and time already exists"
+    );
 
 
     const doc: AlarmDb = await create("alarms", reqDoc);
@@ -41,12 +42,12 @@ export async function createAlarm(req, res, next): Promise<void> {
 
   } catch(e) {
 
-    logger.write(`${errorPrefix} "${e.message}" "${e.status}"
+    logger.write(`"${e.message}" 400
 ${e.stack}`,"error")
     res
-      .status(404)
+      .status(400)
       .type("application/json")
-      .json(e)
+      .json(Object.assign({ message: e.message }, e))
       .end()
 
   }
@@ -73,7 +74,7 @@ export async function getAllAlarms(req, res, next): Promise<void> {
 
   } catch(e) {
 
-    logger.write(`${errorPrefix} "${e.message}" "${e.status}"
+    logger.write(`"${e.message}" "${e.status}"
 ${e.stack}`,"error")
     res
       .status(404)
@@ -105,7 +106,7 @@ export async function getAlarmDetails(req, res, next): Promise<void> {
 
   } catch(e) {
 
-    logger.write(`${errorPrefix} "${e.message}" "${e.status}"
+    logger.write(`"${e.message}" "${e.status}"
 ${e.stack}`,"error")
     res
       .status(404)

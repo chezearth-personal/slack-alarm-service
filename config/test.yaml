@@ -2,6 +2,7 @@ mongoUrl: mongodb://127.0.0.1:27017
 database: testAlarmServer
 database_connection_retries: 1
 database_connection_wait: 1000
+unique_alert_times: false
 cron_check_alarms: "*/3 * * * * *"
 slack_webhook_url: "https://hooks.slack.com/services/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"
 slack_channel: "#general"
