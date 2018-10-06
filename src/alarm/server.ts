@@ -50,7 +50,7 @@ const dbName: string = config.get("database") || "alarmServer";
 
 async function dBconnection(count): Promise<void | DbClient> {
 
-  logger.write(`"Attempt ${count + 1} to connect to database" "${env} environment"`);
+  logger.write(`"Attempt ${count + 1} connecting to database" "${env} environment"`);
   return await connectDb(url, dbName, Number(config.get('database_connection_wait')))
     .then(db => {
 

@@ -2,15 +2,17 @@
   "compilerOptions": {
     "target": "es2016",
     "module": "commonjs",
-    "outDir": "dist/",
+    "outDir": "./dist/",
   },
+  "include": [
+    "src/**/*"
+  ],
   "exclude": [
     ".git",
     "api",
     "config",
     "dist",
     "node_modules",
-    "resoucres",
-    "src/**/*.test.ts"
+    "**/*.test.ts"
   ]
 }

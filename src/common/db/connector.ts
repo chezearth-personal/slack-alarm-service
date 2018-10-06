@@ -10,9 +10,6 @@ export interface DbClient {
 }
 
 
-// const errorPrefix: string = `[${(new Date()).toISOString()}] `
-
-
 export async function getDb(mongoConn: Promise<DbClient | void>): Promise<Db> {
 
   try {
