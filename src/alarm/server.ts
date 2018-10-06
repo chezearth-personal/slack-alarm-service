@@ -54,7 +54,8 @@ async function dBconnection(count): Promise<void | DbClient> {
   return await connectDb(url, dbName, Number(config.get('database_connection_wait')))
     .then(db => {
 
-    logger.write(`"Server connected to database" "${env} environment"`)
+    logger.write(`"Server connected to and polling database" "${env} environment"`);
+    schedulerStart();
     return db;
 
     })

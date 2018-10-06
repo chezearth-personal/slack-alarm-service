@@ -38,7 +38,8 @@ async function swaggerCreate(): Promise<void> {
 
     // unless in test env, use morgan to log requests
     if(env !== "test") {
-      app.use(morgan(`:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time[digits]ms` , { stream: logger }));
+      // app.use(morgan(`:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time[digits]ms` , { stream: logger }));
+      app.use(morgan(`MORGAN:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time[digits]ms` , { stream: logger }));
     }
 
 
@@ -65,7 +66,7 @@ async function dBconnection(count: number): Promise<void | DbClient> {
   return await connectDb(url, dbName, Number(config.get('database_connection_wait')))
 
     .then(db => {
-      logger.write(`"SERVER STARTED and connected to database" "${env} environment"`);
+      logger.write(`"Server connected to database" "${env} environment"`);
 
       // Now there is a database connection, we can call SwaggerExpress
       swaggerCreate();

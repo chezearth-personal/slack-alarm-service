@@ -14,17 +14,17 @@ COPY ./config/ ./config/
 COPY ./src/alarm/ ./src/alarm/
 COPY ./src/common/ ./src/common/
 
-RUN ls -al
-RUN ls -al api/
-RUN ls -al api/swagger/
-RUN ls -al config/
-RUN ls -al src/alarm/
-RUN ls -al src/alarm/db/
-RUN ls -al src/alarm/webhooks/
-RUN ls -al src/common/
-RUN ls -al src/common/db/
-RUN ls -al src/common/helpers/
-RUN ls -al src/common/types/
+# RUN ls -al
+# RUN ls -al api/
+# RUN ls -al api/swagger/
+# RUN ls -al config/
+# RUN ls -al src/alarm/
+# RUN ls -al src/alarm/db/
+# RUN ls -al src/alarm/webhooks/
+# RUN ls -al src/common/
+# RUN ls -al src/common/db/
+# RUN ls -al src/common/helpers/
+# RUN ls -al src/common/types/
 
 RUN ./node_modules/.bin/tsc
 
