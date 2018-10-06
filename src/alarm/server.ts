@@ -12,7 +12,11 @@ import { logger } from "../common/helpers/winston";
 import { connectDb, DbClient } from '../common/db/connector';
 
 
-const env: string = config.util.getEnv("NODE_ENV");
+const env: string = config.util.getEnv("NODE_ENV") || "development";
+const wait: number = Number(config.get("database_connection_wait")) || 6000;
+const retries: number = Number(config.get("database_connection_retries")) || 10;
+const slack_channel: string = config.get("slack_channel") || "#general";
+const slack_username: string = config.get("slack_username") || "webhookbot";
 
 async function schedulerStart(): Promise<void> {
 
@@ -30,7 +34,7 @@ async function schedulerStart(): Promise<void> {
 
         const res: string[] = await Promise.all(alarmsToSend.map(async (e) => await postSlack(e)));
 
-        logger.write(`"sending ${res.length} alarm messag${res.length > 1 ? 'e' : 'es'} with 'alertAt' times: ${alarmsToSend.map(alarm => alarm.alertAt)} to slack from '${config.get("slack_username")}' on the ${config.get("slack_channel")} channel" "results: ${res}"`);
+        logger.write(`"sending ${res.length} alarm messag${res.length > 1 ? 'e' : 'es'} with 'alertAt' times: ${alarmsToSend.map(alarm => alarm.alertAt)} to slack from '${slack_username}' on the ${slack_channel} channel" "results: ${res}"`);
       }
 
     } catch(e) {
@@ -51,7 +55,7 @@ const dbName: string = config.get("database") || "alarmServer";
 async function dBconnection(count): Promise<void | DbClient> {
 
   logger.write(`"Attempt ${count + 1} connecting to database" "${env} environment"`);
-  return await connectDb(url, dbName, Number(config.get('database_connection_wait')))
+  return await connectDb(url, dbName, wait)
     .then(db => {
 
     logger.write(`"Server connected to and polling database" "${env} environment"`);
@@ -62,7 +66,7 @@ async function dBconnection(count): Promise<void | DbClient> {
     .catch(e => {
 
       // console.log("count =", count);
-      if(count < Number(config.get('database_connection_retries')) - 1) return dBconnection(count + 1)
+      if(count + 1 < retries) return dBconnection(count + 1)
         .then(db => db)
         .catch(e => e);
       else {

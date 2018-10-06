@@ -14,20 +14,6 @@ COPY ./config/ ./config/
 COPY ./src/api/ ./src/api/
 COPY ./src/common/ ./src/common/
 
-# RUN ls -al
-# RUN ls -al api/
-# RUN ls -al api/swagger/
-# RUN ls -al config/
-# RUN ls -al src/api/
-# RUN ls -al src/api/controllers/
-# RUN ls -al src/api/db/
-# RUN ls -al src/api/mocks/
-# RUN ls -al src/api/models/
-# RUN ls -al src/common/
-# RUN ls -al src/common/db/
-# RUN ls -al src/common/helpers/
-# RUN ls -al src/common/types/
-
 RUN ./node_modules/.bin/tsc
 
 ARG NODE_ENV="production"

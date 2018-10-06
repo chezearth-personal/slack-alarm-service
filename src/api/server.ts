@@ -11,7 +11,9 @@ import { connectDb, DbClient } from '../common/db/connector';
 
 
 // Node environment
-const env: string = config.util.getEnv("NODE_ENV");
+const env: string = config.util.getEnv("NODE_ENV") || "development";
+const wait: number = Number(config.get("database_connection_wait")) || 6000;
+const retries: number = Number(config.get("database_connection_retries")) || 10;
 
 
 const app: express.Application = express();
@@ -63,7 +65,7 @@ async function dBconnection(count: number): Promise<void | DbClient> {
 
   logger.write(`"Attempt ${count + 1} connecting to database" "${env} environment"`);
 
-  return await connectDb(url, dbName, Number(config.get('database_connection_wait')))
+  return await connectDb(url, dbName, wait)
 
     .then(db => {
       logger.write(`"Server connected to database" "${env} environment"`);
@@ -77,8 +79,7 @@ async function dBconnection(count: number): Promise<void | DbClient> {
 
     .catch(e => {
 
-      // console.log("count =", count);
-      if(count < Number(config.get('database_connection_retries')) - 1) return dBconnection(count + 1)
+      if(count + 1 < retries) return dBconnection(count + 1)
         .then(db => db)
         .catch(e => e);
       else {
