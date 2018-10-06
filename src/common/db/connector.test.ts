@@ -35,7 +35,6 @@ describe(`'db/connector.ts' tests`, function() {
     it("should get a connection object for the app", async function() {
       try {
         const res: Db = await getDb(mongoConn);
-        // const res = (await mongoDb).db;
         expect(res.databaseName).to.equal('testAlarmServer');
         return Promise.resolve();
       } catch (e) {

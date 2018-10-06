@@ -15,7 +15,6 @@ import { logger } from "../../common/helpers/winston";
 import { isUnique, payload2doc, doc2payload } from "../models/alarms";
 
 
-// const errorPrefix: string = `                 - - [${(new Date()).toISOString()}] `
 const uniqueAlertAt: boolean = config.get("unique_alert_times")
 
 export async function createAlarm(req, res, next): Promise<void> {

@@ -1,7 +1,6 @@
 "use strict";
 
 import * as config from "config";
-// import { Db, MongoClient } from "mongodb";
 import * as schedule from "node-schedule";
 
 import { getNewAlarms } from "./db/crud";
@@ -18,11 +17,10 @@ const retries: number = Number(config.get("database_connection_retries")) || 10;
 const slack_channel: string = config.get("slack_channel") || "#general";
 const slack_username: string = config.get("slack_username") || "webhookbot";
 
+
 async function schedulerStart(): Promise<void> {
 
   schedule.scheduleJob(config.get("cron_check_alarms"), async () => {
-
-    //myStream.write(`::ffff:127.0.0.1 - - [${(new Date()).toISOString()}] "This is the 3-second scheduled item"`);
 
     try {
 
@@ -65,7 +63,6 @@ async function dBconnection(count): Promise<void | DbClient> {
     })
     .catch(e => {
 
-      // console.log("count =", count);
       if(count + 1 < retries) return dBconnection(count + 1)
         .then(db => db)
         .catch(e => e);

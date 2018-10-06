@@ -1,10 +1,7 @@
 "use strict";
 
-// import * as assert from "assert";
-// import { get } from "config";
 import {
   Db,
-  // ObjectID,
   WriteOpResult,
   DeleteWriteOpResultObject
 } from "mongodb";
@@ -19,7 +16,6 @@ export async function create(col: string, doc: AlarmDb): Promise<AlarmDb> {
 
   try {
 
-    // const db: Db = (await mongoDb).db;
     const db: Db = await getDb(mongoConn);
     const res: WriteOpResult = await db
       .collection(col)
@@ -40,7 +36,6 @@ export async function getMany(col, query, projection, sort): Promise<AlarmDb[]> 
 
   try {
 
-    // const db: Db = (await mongoDb).db;
     const db: Db =  await getDb(mongoConn);
 
     const results: AlarmDb[] = await db
@@ -64,7 +59,6 @@ export async function getOne(col, id: string, otherQueryParams: any, projection:
 
   try {
 
-    // const db: Db = (await mongoDb).db;
     const db: Db = await getDb(mongoConn);
 
     const opQuery: any = Object.assign({ _id: id }, otherQueryParams);
@@ -87,7 +81,6 @@ export async function getCount(col, query): Promise<number> {
 
   try {
 
-    // const db: Db = (await mongoDb).db;
     const db: Db = await getDb(mongoConn);
 
     const num: number = await db
@@ -108,7 +101,6 @@ export async function deleteAll(col: string): Promise<DeleteWriteOpResultObject[
 
   try {
 
-    // const db: Db = (await mongoDb).db;
     const db: Db = await getDb(mongoConn);
 
     const res: DeleteWriteOpResultObject = await db

@@ -40,7 +40,6 @@ async function swaggerCreate(): Promise<void> {
 
     // unless in test env, use morgan to log requests
     if(env !== "test") {
-      // app.use(morgan(`:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time[digits]ms` , { stream: logger }));
       app.use(morgan(`MORGAN:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time[digits]ms` , { stream: logger }));
     }
 
@@ -60,6 +59,7 @@ async function swaggerCreate(): Promise<void> {
   });
 
 }
+
 
 async function dBconnection(count: number): Promise<void | DbClient> {
 
@@ -92,49 +92,6 @@ async function dBconnection(count: number): Promise<void | DbClient> {
 
 
 export const mongoConn: Promise<void | DbClient> = dBconnection(0);
-/*
-export const mongoConn: Promise<void | DbClient> = connectDb(url, dbName)
 
-  .then(db => {
-    logger.write(`"Server connected to database" "${env} environment"`)
-
-    // Now there is a database connection, we can start the server...
-    SwaggerExpress.create(swaggerConfig, function(err, swaggerExpress) {
-
-      if (err) { throw err; }
-
-
-      // unless in test env, use morgan to log requests
-      if(env !== "test") {
-        app.use(morgan(`MORGAN:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time[digits]ms` , { stream: logger }));
-      }
-
-
-      // install middleware
-      swaggerExpress.register(app);
-
-
-      // start listening
-      const port: string | number = config.util.getEnv("PORT") || 3000;
-      app.listen(port);
-
-
-      // Start up message
-      if(env !== "test") logger.write(`"Server started and listening on localhost:${port}" "${env} environment"`);
-
-    });
-
-    return db;
-
-  })
-
-  .catch(e => {
-
-
-    logger.write(`"Server failed to connect to database" "${env} environment"`, "error");
-    process.exit(1);
-
-  });
-*/
 
 export default app; // for testing

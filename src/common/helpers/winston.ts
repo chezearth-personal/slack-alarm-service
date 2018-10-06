@@ -17,7 +17,6 @@ const options: winston.LoggerOptions = {
     handleExceptions: true,
     json: false,
     colorize: true
-    // formatter: opts => `${opts.level}:${opts.level.length} ${" ".repeat(7 - opts.level.length)}::ffff:127.0.0.1 - - ${opts.message}`
   }
 };
 

@@ -15,7 +15,6 @@ export async function getDb(mongoConn: Promise<DbClient | void>): Promise<Db> {
   try {
 
     const dbClient: void | DbClient = await mongoConn;
-    // console.log("dbClient =", dbClient, "test =", !dbClient);
     if(!dbClient) throw {
       message: 'No database connection - check MongoDb is running',
       status: 400
@@ -27,7 +26,6 @@ export async function getDb(mongoConn: Promise<DbClient | void>): Promise<Db> {
 
     logger.write(`"${e.message}" "${e.status}"
 ${e.stack}`,"error");
-    // console.log("ERROR THROWN (connector.ts/getDb()):", e);
     return Promise.reject(e);
 
   }
