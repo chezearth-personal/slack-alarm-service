@@ -31,7 +31,7 @@ logger.write(`"Attempting to connect to database" "${env} environment"`);
 
 export const mongoConn: Promise<void | DbClient> = connectDb(url, dbName)
   .then(db => {
-    logger.write(`"SERVER STARTED and connected to database" "${env} environment"`)
+    logger.write(`"Server connected to database" "${env} environment"`)
 
     // Now there is a database connection, we can start the server...
     SwaggerExpress.create(swaggerConfig, function(err, swaggerExpress) {
@@ -41,7 +41,7 @@ export const mongoConn: Promise<void | DbClient> = connectDb(url, dbName)
 
       // unless in test env, use morgan to log requests
       if(env !== "test") {
-        app.use(morgan(`:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time[digits]ms` , { stream: logger }));
+        app.use(morgan(`MORGAN:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time[digits]ms` , { stream: logger }));
       }
 
 
@@ -55,7 +55,7 @@ export const mongoConn: Promise<void | DbClient> = connectDb(url, dbName)
 
 
       // Start up message
-      if(env !== "test") logger.write(`[${(new Date()).toISOString()}] "SERVER STARTED and listening on localhost:${port}" "${env} environment"`);
+      if(env !== "test") logger.write(`"Server started and listening on localhost:${port}" "${env} environment"`);
 
     });
 

@@ -4,6 +4,12 @@ import * as winston from "winston";
 import { util } from "config";
 
 
+function msgParser(msg: string, timestamp: string): string {
+  return msg.substring(0, 6) === "MORGAN"
+    ? msg.substring(6)
+    : `::ffff:127.0.0.1 - - [${timestamp}] ${msg}`;
+}
+
 
 const options: winston.LoggerOptions = {
   console: {
@@ -23,13 +29,9 @@ const logging: winston.LoggerInstance = util.getEnv('NODE_ENV') !== "test"
         exitOnError: false,
         json: false,
         timestamp: () => (new Date).toISOString(),
-        formatter: opts => `${opts.level}:${" ".repeat(7 - opts.level.length)}::ffff:127.0.0.1 - - [${opts.timestamp()}] ${opts.message}`
+        formatter: options => `${options.level}:${" ".repeat(7 - options.level.length)}${msgParser(options.message, options.timestamp())}`
       })
     ]
-    // exitOnError: false,
-    // transports: [
-      // new winston.transports.Console(options)
-    // ]
   })
   : new (winston.Logger)({
     transports: [
@@ -38,7 +40,7 @@ const logging: winston.LoggerInstance = util.getEnv('NODE_ENV') !== "test"
         exitOnError: false,
         json: false,
         timestamp: () => (new Date).toISOString(),
-        formatter: opts => `${opts.level}:${" ".repeat(7 - opts.level.length)}::ffff:127.0.0.1 - - ${opts.message}`
+        formatter: options => `${options.level}:${" ".repeat(7 - options.level.length)}${msgParser(options.message, options.timestamp())}`
       })
     ]
   });

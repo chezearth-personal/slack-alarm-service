@@ -50,7 +50,7 @@ logger.write(`"Attempting to connect to database" "${env} environment"`);
 export const mongoConn: Promise<void | DbClient> = connectDb(url, dbName)
   .then(db => {
 
-    logger.write(`"Server started and polling database" "${env} environment"`)
+    logger.write(`"Server connected to database" "${env} environment"`)
     return db;
 
   })
