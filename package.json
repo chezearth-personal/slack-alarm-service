@@ -1,6 +1,6 @@
 {
   "name": "slack-alarm-service",
-  "version": "1.0.77",
+  "version": "1.0.78",
   "private": true,
   "description": "Slack Alarm Micorservice API",
   "keywords": [],
