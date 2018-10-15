@@ -60,7 +60,7 @@ If the project is run as standalone app instead of in containers, then MongoDB w
   Now copy webhook url from Slack and place it over the string value for `slack_webhook_url` above. Add in the other values: your preferred Slack channel (`#<your_channel>`) user name (`<slack_username>`) and any default slack icon emoji (`:ghost:` looks like :ghost:).
 - Enter `docker-compose up` from your project directory. The terminal window will show the build process.
 - Docker will build the images, which includes the database and the code dependencies, then it will start the containers and the NodeJS apps will connect up to the database and open port 3000 through to the host. The logs for each container will be shown in the terminal window. If you don’t wish to see the logs, you can fork by adding `-d` or `--detach` to `docker-compose up` (i.e. `docker-compose up -d`)
-- Try `curl`ing into the app (you need a new uuid string--I use the OSSP `uuid` utility which I get from Homebrew `brew install ossp-uuid`):
+- Try `curl`ing into the app. Each POST requires a new uuid string and the example below uses the OSSP `uuid` helper utility. Mac users can install it using Homebrew (you may need to install the Homebrew package manager) `brew install ossp-uuid` and it is available on Linux at the usual repositories, `apt-get` or `yum`, if it is not already installed:
   ```Bash
   $ curl -X GET http://127.0.0.1:3000/alarms
   $ curl -X POST -H 'Cache-Control: no-cache' -H 'Content-Type: application/json' -d '{"id": "'$(uuid)'", "name": "Create a cool name", "alertAt": "2018-10-10T09:07:23.000Z", "iconEmoji":":+1:"}' http://127.0.0.1:3000/alarms
