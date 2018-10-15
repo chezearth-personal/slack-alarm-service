@@ -1,6 +1,6 @@
 {
   "name": "slack-alarm-service",
-  "version": "1.0.77",
+  "version": "1.0.78",
   "private": true,
   "description": "Slack Alarm Micorservice API",
   "keywords": [],
@@ -9,6 +9,7 @@
   "main": "dist/api/server.js",
   "dependencies": {
     "@chezearth/swagger": "^0.7.6",
+    "@chezearth/swagger-express-mw": "^0.7.2",
     "config": "^2.0.1",
     "express": "^4.12.3",
     "mime": "^2.3.1",
@@ -18,7 +19,6 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "save": "^2.3.2",
-    "swagger-express-mw": "^0.7.0",
     "winston": "^2.4.4"
   },
   "devDependencies": {

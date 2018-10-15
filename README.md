@@ -4,13 +4,13 @@
 
 API to accept and list alarms and a webhook and post them onto Slack.
 
-> A small detail: I have installed typescript and gulp locally and added `./node_modules/.bin` to my `PATH` variable. If, for example, Typescript or Gulp are installed globally, the application should work but parameters on the `tsconfig.json` and `gulpfile.js` may need changing.
+> A small detail: I have installed typescript and gulp in the project directory with `./node_modules/.bin` added to my Bash `PATH` variable. If, for example, Typescript or Gulp are installed globally and you want to use those, the application should still work. Gulp uses the `gulp-typescript` library to carry out its compile task and Mocha uses `ts-node` to compile typescript tests
 
-The DB used is MongoDB and the project is configured to connect to a single containerised instance, without authentication. The Mongo container has a volume set to the `./data` local directory.
+The DB used is MongoDB and the project is configured to connect to a single containerised instance, without authentication. The Mongo container has a volume mounted onto the `./mongo/data` local project directory.
 
-The test suite has ... tests and uses a different database from the that used for other environments. Data are created during the test and are deleted if the CLEAN_TEST environment variable is set to 'true', 't', 'yes' or 'y'. They may be left un-cleaned to inspect the results, e.g. with the Mongo shell.
+The test suite uses a different database from the that used with other environments. Data are created during the test and are deleted if the CLEAN_TEST environment variable is set to 'true', 't', 'yes' or 'y'. They may be left un-cleaned to inspect the results, e.g. with the Mongo shell.
 
-The e2e tests ...
+The e2e tests ...[TODO]
 
 The scheduler is set to check the database every second, although this can be changed in the configs.
 
@@ -30,6 +30,25 @@ $ git checkout <label>
 1. The e2e and mocks tests that are run with curl use the `uuid` bash command to generate the required UUIDs in the `POST alarm/` request bodies and `GET alarm/{id}` query strings. The command can be installed with Homebrew (`brew install ossp-uuid`) on MacOS or `apt-get uuid` on Debian/Ubuntu Linux
 
 If the project is run as standalone app instead of in containers, then MongoDB will need to be installed on the host machine and the `development.yml` and `test.yml` config files changed to include the appropriate connection strings.
+
+## How to set up and run the project
+
+- install docker and start it up
+- create a channel or team or use an existing channel in in Slack and get the webhook from it
+- copy the webhook url from Slack and place it over the value for `slack_webhook_url` in the YAML below. Also add in the desired values for your Slack channel, user name and any default slack icon emoji:```yaml
+# Slack webhook url, channel, username and default emoji icon is kept here
+slack_webhook_url: "https://hooks.slack.com/services/<webhook>"
+slack_channel: "#general"
+slack_username: "webhookbot"
+slack_icon_emoji: ":ghost:"
+```Copy the contents and paste them in a file called `slack.yaml` in the `config/` directory.
+- go into the terminal, `cd` into the project and type `docker-compose up`. The terminal window will show the build process.
+- Docker will build the images, which includes the database and the code dependencies, then it will start the containers and the nodejs apps will connect up to the database and open port 3000 through to the host. The logs for each container will be shown in the terminal window. If you don’t wish to see the logs, you can fork by adding `-d` or `--detach` to `docker-compose up` (i.e. `docker-compose up -d`)
+- Try `curl`ing into the app (you need a new uuid string--I use the OSSP `uuid` utility which I get from Homebrew `brew install ossp-uuid`):
+```curl -X GET http://127.0.0.1:3000/alarms
+curl -X POST -H 'Cache-Control: no-cache' -H 'Content-Type: application/json' -d '{"id": "'$(uuid)'", "name": "Create a cool name", "alertAt": "2018-10-10T09:07:23.000Z", "iconEmoji":":+1:"}' http://127.0.0.1:3000/alarms```
+Or you can use Postman :slightly_smiling_face:
+If you started Docker-Compose in detached mode (`-d`), then you can see the logs for one of the services with `docker logs -f <container>`, where container is one of `slack-alarm-service_mongo-db_1`, `slack-alarm-service_alarm-server_1` or `slack-alarm-service_rest-api_1`. (edited)
 
 ## How the Project was Constructed
 
