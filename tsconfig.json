@@ -9,10 +9,19 @@
   ],
   "exclude": [
     ".git",
+    ".gitignore",
+    ".dockerignore",
     "api",
     "config",
     "dist",
+    "mongo",
     "node_modules",
-    "**/*.test.ts"
+    "**/*.test.ts",
+    "*.js",
+    "*.json",
+    "*.md",
+    "*.log",
+    "*.yaml",
+    "Dockerfile*"
   ]
 }
