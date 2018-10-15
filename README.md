@@ -65,13 +65,15 @@ If the project is run as standalone app instead of in containers, then MongoDB w
   $ curl -X GET http://127.0.0.1:3000/alarms
   $ curl -X POST -H 'Cache-Control: no-cache' -H 'Content-Type: application/json' -d '{"id": "'$(uuid)'", "name": "Create a cool name", "alertAt": "2018-10-10T09:07:23.000Z", "iconEmoji":":+1:"}' http://127.0.0.1:3000/alarms
   ```
-  Or you can use Postman :slightly_smiling_face:
+  Or you can use Postman :slightly_smiling_face:.
+
   If you started Docker-Compose in detached mode (`-d`), then you can see the logs for one of the services with `docker logs -f <container>`, where container is one of `slack-alarm-service_mongo-db_1`, `slack-alarm-service_alarm-server_1` or `slack-alarm-service_rest-api_1`. (edited)
 
-### Testing on a local machine
+### Test on a local machine
 
 - Start a MongoDB server locally (ensure the default port, 27017, is used)
 - Run `npm test`
+
 
 ## How the Project was Constructed
 
