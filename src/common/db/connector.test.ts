@@ -3,8 +3,9 @@
 import * as chai from "chai"; // for .ts tests
 import * as mocha from "mocha";
 import * as config from "config";
+import { Db } from "mongodb";
 
-import { mongoConn, Db } from "../../../dist/api/server";
+import { mongoConn } from "../../../dist/api/server";
 import { getDb, connectDb } from "../../../dist/common/db/connector";
 
 const expect = chai.expect;
@@ -16,7 +17,7 @@ describe(`'db/connector.ts' tests`, function() {
   describe("test (db) connector function", function() {
 
     it("should get the db", async function() {
-      this.timeout(10000);
+      this.timeout(30000); // long timout for slow database connections on some machines
       try {
         const res = await connectDb("mongodb://localhost:27017", dbName);
         expect(res.db.databaseName).to.equal(dbName);

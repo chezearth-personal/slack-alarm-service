@@ -2,6 +2,7 @@
 
 import * as config from "config";
 import * as schedule from "node-schedule";
+// import { DbClient } from "mongodb";
 
 import { getNewAlarms } from "./db/crud";
 import { postSlack } from "./webhooks/slack";
@@ -14,7 +15,7 @@ import { connectDb, DbClient } from '../common/db/connector';
 const env: string = config.util.getEnv("NODE_ENV") || "development";
 const wait: number = Number(config.get("database_connection_wait")) || 6000;
 const retries: number = Number(config.get("database_connection_retries")) || 10;
-const slack_channel: string = config.get("slack_channel") || "#general";
+const slack_channel: string = config.get("slack_channel"); // || "#general";
 const slack_username: string = config.get("slack_username") || "webhookbot";
 
 
@@ -52,26 +53,24 @@ const dbName: string = config.get("database") || "alarmServer";
 
 async function dBconnection(count): Promise<void | DbClient> {
 
+  console.log("slack_channel =", slack_channel)
   if(env !== "test") logger.write(`"Attempt ${count + 1} connecting to database" "${env} environment"`);
-  return await connectDb(url, dbName, wait)
-    .then(db => {
-
+  try {
+    const db: DbClient = await connectDb(url, dbName, wait);
     if(env !== "test") logger.write(`"Server connected to and polling database" "${env} environment"`);
     schedulerStart();
     return db;
+  } catch(e) {
 
-    })
-    .catch(e => {
+    if(count + 1 < retries) return await dBconnection(count + 1);
+      // .then(db => db)
+      // .catch(e => e);
+    else {
+      logger.write(`"Server failed to connect to database" "${env} environment"`, "error");
+      process.exit(1);
+    }
 
-      if(count + 1 < retries) return dBconnection(count + 1)
-        .then(db => db)
-        .catch(e => e);
-      else {
-        logger.write(`"Server failed to connect to database" "${env} environment"`, "error");
-        process.exit(1);
-      }
-
-    });
+  }
 }
 
 

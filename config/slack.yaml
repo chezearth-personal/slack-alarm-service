@@ -1,6 +1,0 @@
-
-# Slack webhook url, channel, username and default emoji icon is kept here
-slack_webhook_url: "https://hooks.slack.com/services/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"
-slack_channel: "#general"
-slack_username: "webhookbot"
-slack_icon_emoji: ":ghost:"

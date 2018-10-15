@@ -2,7 +2,7 @@
 
 ## Introduction
 
-API to accept and list alarms and a webhook and post them onto Slack.
+API to accept and list alarms, with a webhook that posts them onto Slack.
 
 > A small detail: I have installed typescript and gulp in the project directory with `./node_modules/.bin` added to my Bash `PATH` variable. If, for example, Typescript or Gulp are installed globally and you want to use those, the application should still work. Gulp uses the `gulp-typescript` library to carry out its compile task and Mocha uses `ts-node` to compile typescript tests
 
@@ -33,22 +33,45 @@ If the project is run as standalone app instead of in containers, then MongoDB w
 
 ## How to set up and run the project
 
-- install docker and start it up
-- create a channel or team or use an existing channel in in Slack and get the webhook from it
-- copy the webhook url from Slack and place it over the value for `slack_webhook_url` in the YAML below. Also add in the desired values for your Slack channel, user name and any default slack icon emoji:```yaml
-# Slack webhook url, channel, username and default emoji icon is kept here
-slack_webhook_url: "https://hooks.slack.com/services/<webhook>"
-slack_channel: "#general"
-slack_username: "webhookbot"
-slack_icon_emoji: ":ghost:"
-```Copy the contents and paste them in a file called `slack.yaml` in the `config/` directory.
-- go into the terminal, `cd` into the project and type `docker-compose up`. The terminal window will show the build process.
-- Docker will build the images, which includes the database and the code dependencies, then it will start the containers and the nodejs apps will connect up to the database and open port 3000 through to the host. The logs for each container will be shown in the terminal window. If you don’t wish to see the logs, you can fork by adding `-d` or `--detach` to `docker-compose up` (i.e. `docker-compose up -d`)
+### Run in docker containers
+
+- Install docker and start it up
+- Open `terminal` and `cd` into the project directory. If you type `ls` you should see the following files and directories:
+  ```Bash
+  .dockerignore       Dockerfile-api      docker-compose.yaml package.json
+  .git/               README.md           gulpfile.js         src/
+  .gitignore          api/                mongo/              tsconfig.json
+  Dockerfile-alarm    config/             package-lock.json
+  ```
+  plus a few others
+- Create a channel or team or use an existing channel in in Slack and get the webhook from it
+- Create a file in the `./config` directory called `local.yaml`.
+  ```bash
+  $ touch ./config/local.yaml
+  ```
+  Copy the following and paste it into the file
+  ```yaml
+  # Slack webhook url, channel, username and default emoji icon is kept here
+  slack_webhook_url: "https://hooks.slack.com/services/<webhook>"
+  slack_channel: "#<your_channel>"
+  slack_username: "<slack_username>"
+  slack_icon_emoji: ":ghost:" # choose and appropriate icon
+  ```
+  Now copy webhook url from Slack and place it over the string value for `slack_webhook_url` above. Add in the other values: your preferred Slack channel (`#<your_channel>`) user name (`<slack_username>`) and any default slack icon emoji (`:ghost:` looks like :ghost:).
+- Enter `docker-compose up` from your project directory. The terminal window will show the build process.
+- Docker will build the images, which includes the database and the code dependencies, then it will start the containers and the NodeJS apps will connect up to the database and open port 3000 through to the host. The logs for each container will be shown in the terminal window. If you don’t wish to see the logs, you can fork by adding `-d` or `--detach` to `docker-compose up` (i.e. `docker-compose up -d`)
 - Try `curl`ing into the app (you need a new uuid string--I use the OSSP `uuid` utility which I get from Homebrew `brew install ossp-uuid`):
-```curl -X GET http://127.0.0.1:3000/alarms
-curl -X POST -H 'Cache-Control: no-cache' -H 'Content-Type: application/json' -d '{"id": "'$(uuid)'", "name": "Create a cool name", "alertAt": "2018-10-10T09:07:23.000Z", "iconEmoji":":+1:"}' http://127.0.0.1:3000/alarms```
-Or you can use Postman :slightly_smiling_face:
-If you started Docker-Compose in detached mode (`-d`), then you can see the logs for one of the services with `docker logs -f <container>`, where container is one of `slack-alarm-service_mongo-db_1`, `slack-alarm-service_alarm-server_1` or `slack-alarm-service_rest-api_1`. (edited)
+  ```Bash
+  $ curl -X GET http://127.0.0.1:3000/alarms
+  $ curl -X POST -H 'Cache-Control: no-cache' -H 'Content-Type: application/json' -d '{"id": "'$(uuid)'", "name": "Create a cool name", "alertAt": "2018-10-10T09:07:23.000Z", "iconEmoji":":+1:"}' http://127.0.0.1:3000/alarms
+  ```
+  Or you can use Postman :slightly_smiling_face:
+  If you started Docker-Compose in detached mode (`-d`), then you can see the logs for one of the services with `docker logs -f <container>`, where container is one of `slack-alarm-service_mongo-db_1`, `slack-alarm-service_alarm-server_1` or `slack-alarm-service_rest-api_1`. (edited)
+
+### Testing on a local machine
+
+- Start a MongoDB server locally (ensure the default port, 27017, is used)
+- Run `npm test`
 
 ## How the Project was Constructed
 

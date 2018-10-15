@@ -65,28 +65,28 @@ async function dBconnection(count: number): Promise<void | DbClient> {
 
   if(env !== "test") logger.write(`"Attempt ${count + 1} connecting to database" "${env} environment"`);
 
-  return await connectDb(url, dbName, wait)
+  try {
 
-    .then(db => {
-      if(env !== "test") logger.write(`"Server connected to database" "${env} environment"`);
+    const db: DbClient = await connectDb(url, dbName, wait);
 
-      // Now there is a database connection, we can call SwaggerExpress
-      swaggerCreate();
+    if(env !== "test") logger.write(`"Server connected to database" "${env} environment"`);
 
-      return db;
+    // Now there is a database connection, we can call SwaggerExpress
+    swaggerCreate();
 
-    })
+    return db;
 
-    .catch(e => {
+  } catch(e) {
 
-      if(count + 1 < retries) return dBconnection(count + 1)
-        .then(db => db)
-        .catch(e => e);
-      else {
-        logger.write(`"Server failed to connect to database" "${env} environment"`, "error");
-        process.exit(1);
-      }
-    });
+    if(count + 1 < retries) return await dBconnection(count + 1);
+      // .then(db => db)
+      // .catch(e => e);
+    else {
+      logger.write(`"Server failed to connect to database" "${env} environment"`, "error");
+      process.exit(1);
+    }
+
+  }
 
 }
 

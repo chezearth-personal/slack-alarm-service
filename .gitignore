@@ -36,5 +36,8 @@ dist
 # Runtime configuration for swagger app
 config/runtime.yaml
 
+# Slack webhook configuration file
+config/local.yaml
+
 # MongoDB data used by the Mongo Docker container
 mongo
