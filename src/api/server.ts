@@ -54,7 +54,7 @@ async function swaggerCreate(): Promise<void> {
 
 
     // Start up message
-    if(env !== "test") logger.write(`[${(new Date()).toISOString()}] "Server started and listening on localhost:${port}" "${env} environment"`);
+    if(env !== "test") logger.write(`"Server started and listening on localhost:${port}" "${env} environment"`);
 
   });
 
