@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:8-alpine
 
 RUN mkdir -p /usr/src/app/
 
@@ -11,8 +11,8 @@ RUN npm ci
 RUN mkdir -p api config src/api src/common
 COPY ./api/ ./api/
 COPY ./config/ ./config/
-COPY ./src/alarm/ ./src/alarm/
 COPY ./src/common/ ./src/common/
+COPY ./src/alarm/ ./src/alarm/
 
 RUN ./node_modules/.bin/tsc
 

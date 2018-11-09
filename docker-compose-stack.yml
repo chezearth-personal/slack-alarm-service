@@ -1,0 +1,60 @@
+version: '3.1'
+
+services:
+
+  # mongo-db:
+  #   # container_name: slack-alarm-service_mongo-db_1
+  #   image: mongo:3.6
+  #   command: mongod --dbpath /data/db --smallfiles
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+  #     # placement:
+  #     #   constraints: [node.Hostname == 'node1']
+  #   mount:
+  #   volumes:
+  #     - /home/docker/data:/data/db
+  #     - /home/docker/config:/data/config
+  #   ports:
+  #     - '27017:27017'
+
+  mongo:
+    image: mongo:3.6
+    network: mongo
+    replicas: 1
+    mount:
+      - type: volume
+        source: mongodata1
+        target: /data/db
+      - type: volume
+        source: mongoconfig1
+        target: /data/configdb
+    constraint: 'node.labels.mongo.replica == 1'
+    name: mongo1
+    replSet: projects 
+
+  # rest-api:
+  #   image: chezearth/node-api
+  #   deploy:
+  #     replicas: 1
+  #     restart_policy:
+  #       condition: on-failure
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-api
+  #   environment:
+  #     NODE_ENV: production
+  #   ports:
+  #     - '3000:3000'
+  #
+  # alarm-server:
+  #   image: chezearth/node-alarm
+  #   deploy:
+  #     replicas: 1
+  #     restart_policy:
+  #       condition: on-failure
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-alarm
+  #   environment:
+  #     NODE_ENV: production

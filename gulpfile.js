@@ -29,7 +29,7 @@ gulp.task("payloads", () => {
         { before: "alertAt: string", after: "alertAt: Date" }
       ]);
     })
-    .catch(e => console.log(e))
+    .catch(e => console.error(e))
     .then(dts => fs.writeFileSync(
       './src/common/types/docs.d.ts',
       `\n// The contents of this file are auto-generated from swagger.yaml definitions.\n// Do not edit directly.\n\n${dts}\n`))

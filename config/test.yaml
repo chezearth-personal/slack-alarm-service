@@ -4,3 +4,6 @@ database_connection_retries: 1
 database_connection_wait: 1000
 unique_alert_times: false
 cron_check_alarms: "*/3 * * * * *"
+slack_channel: "#general"
+slack_username: webhookbot
+slack_icon_emoji: ":ghost:" # choose an appropriate icon

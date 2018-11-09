@@ -78,10 +78,9 @@ async function dBconnection(count: number): Promise<void | DbClient> {
 
   } catch(e) {
 
-    if(count + 1 < retries) return await dBconnection(count + 1);
-      // .then(db => db)
-      // .catch(e => e);
-    else {
+    if(count + 1 < retries) {
+      return await dBconnection(count + 1);
+    } else {
       logger.write(`"Server failed to connect to database" "${env} environment"`, "error");
       process.exit(1);
     }
