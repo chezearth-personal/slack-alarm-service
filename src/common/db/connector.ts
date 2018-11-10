@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-import { Db, MongoClient } from "mongodb";
+import { Db, MongoClient } from 'mongodb';
 import * as util from 'util';
-import { logger } from "../helpers/winston"
+import { logger } from '../helpers/winston'
 
 export interface DbClient {
   db: Db,
@@ -46,7 +46,7 @@ export async function connectDb(uri: string, dbName: string, wait: number): Prom
       const client = await MongoClient.connect(uri, { useNewUrlParser: true });
       dbClient.client = client;
       dbClient.db = client.db(dbName);
-      logger.write(`"connected to database ${uri}/${dbName}`)
+      // logger.write(`"connected to database ${uri}/${dbName}`)
       return dbClient;
 
     } catch(e) {

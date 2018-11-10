@@ -5,9 +5,7 @@ export interface SlackWebHook {
   userName: string;
 }
 
-export interface SlackBody {
-  channel: string;
-  userName: string;
+export interface SlackBody extends SlackWebHook {
   text: string;
   icon_emoji: string;
 }

@@ -1,18 +1,18 @@
-"use strict";
+'use strict';
 
-import * as config from "config";
-import * as rp from "request-promise";
-import { logger } from "../../common/helpers/winston"
-import { SlackBody } from "../types/slack";
+import * as config from 'config';
+import * as rp from 'request-promise';
+import { logger } from '../../common/helpers/winston'
+import { SlackBody } from '../types/slack';
 
 
 const errorPrefix: string = `                 - - [${(new Date()).toISOString()}] `
 
 
 const options = {
-  uri: config.get("slack_webhook_url"),
-  method: "POST",
-  headers: { "Content-Type": "Application/Json" }
+  uri: config.get('slack_webhook_url'),
+  method: 'POST',
+  headers: { 'Content-Type': 'Application/Json' }
 };
 
 

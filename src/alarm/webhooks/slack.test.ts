@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-import * as chai from "chai";
-import * as uuidv4 from "uuid";
+import * as chai from 'chai';
+import * as uuidv4 from 'uuid';
 
-import { postSlack } from "./slack";
+import { postSlack } from './slack';
 
 
 const expect = chai.expect;
@@ -12,13 +12,17 @@ const expect = chai.expect;
 describe(`'webhooks/slack.ts' tests`, function() {
 
 
-  describe("sending out messages", function() {
+  describe('sending out messages', function() {
 
-    it("should send a simple message", async () => {
+    it('should send a simple message', async () => {
 
       try {
 
-        const res = await postSlack({ _id: uuidv4().toString(), name: 'This is the Test Suite testing the Slack sender', alertAt: new Date(), iconEmoji: ":parrotdealwithit:"})
+        const res = await postSlack({
+          text: 'This is the Test Suite testing the Slack sender',
+          channel: '#general',
+          userName: 'webhookbot',
+          icon_emoji: ':parrotdealwithit:'});
         expect(res).to.equal('ok');
         return Promise.resolve();
 
