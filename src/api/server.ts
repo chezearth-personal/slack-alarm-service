@@ -1,33 +1,25 @@
-"use strict";
+'use strict';
 
-import * as config from "config";
-import * as express from "express";
-import * as morgan from "morgan";
-import * as SwaggerExpress from "@chezearth/swagger-express-mw";
+import * as config from 'config';
+import * as express from 'express';
+import * as morgan from 'morgan';
+import * as SwaggerExpress from '@chezearth/swagger-express-mw';
 
-import { logger } from "../common/helpers/winston";
+import { logger } from '../common/helpers/winston';
 
 import { connectDb, DbClient } from '../common/db/connector';
 
 
 // Node environment
-const env: string = config.util.getEnv("NODE_ENV") || "development";
-const wait: number = Number(config.get("database_connection_wait")) || 6000;
-const retries: number = Number(config.get("database_connection_retries")) || 10;
-
+const env: string = process.env.NODE_ENV || 'development';
 
 const app: express.Application = express();
 
 
-const appRoot = __dirname.substring(0, __dirname.indexOf("dist") - 1);
+const appRoot = __dirname.substring(0, __dirname.indexOf('dist') - 1);
 const swaggerConfig: SwaggerExpress.Config = {
   appRoot: appRoot  // required config
 };
-
-
-// Mongo DB connection. Returned as a promise which resolves quite quickly. The promise is awaited each time the connection is used.
-const url: string = config.get("mongoUrl") || "mongodb://127.0.0.1:27017";
-const dbName: string = config.get("database") || "alarmServer";
 
 
 async function swaggerCreate(): Promise<void> {
@@ -39,7 +31,7 @@ async function swaggerCreate(): Promise<void> {
 
 
     // unless in test env, use morgan to log requests
-    if(env !== "test") {
+    if(env !== 'test') {
       app.use(morgan(`MORGAN:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time[digits]ms` , { stream: logger }));
     }
 
@@ -49,12 +41,12 @@ async function swaggerCreate(): Promise<void> {
 
 
     // start listening
-    const port: string | number = config.util.getEnv("PORT") || 3000;
+    const port: string | number = process.env.PORT || 3000;
     app.listen(port);
 
 
     // Start up message
-    if(env !== "test") logger.write(`"Server started and listening on localhost:${port}" "${env} environment"`);
+    if(env !== 'test') logger.write(`"Server started and listening on localhost:${port}" "${env} environment"`);
 
   });
 
@@ -63,16 +55,22 @@ async function swaggerCreate(): Promise<void> {
 
 async function dBconnection(count: number): Promise<void | DbClient> {
 
-  if(env !== "test") logger.write(`"Attempt ${count + 1} connecting to database" "${env} environment"`);
+  // Mongo DB connection. Returned as a promise which resolves quite quickly but is awaited if the connection is used.
+  const url: string = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017';
+  const dbName: string = config.get('database') || 'alarmServer';
+  const wait: number = Number(config.get('database_connection_wait')) || 6000;
+  const retries: number = Number(config.get('database_connection_retries')) || 10;
+
+  if(env !== 'test') logger.write(`"Attempt ${count + 1} connecting to database: ${url}" "${env} environment"`);
 
   try {
 
     const db: DbClient = await connectDb(url, dbName, wait);
 
-    if(env !== "test") logger.write(`"Server connected to database" "${env} environment"`);
+    if(env !== "test") logger.write(`"Server connected to database: ${url}" "${env} environment"`);
 
     // Now there is a database connection, we can call SwaggerExpress
-    swaggerCreate();
+    await swaggerCreate();
 
     return db;
 
@@ -81,7 +79,7 @@ async function dBconnection(count: number): Promise<void | DbClient> {
     if(count + 1 < retries) {
       return await dBconnection(count + 1);
     } else {
-      logger.write(`"Server failed to connect to database" "${env} environment"`, "error");
+      logger.write(`"Server failed to connect to database: ${url}" "${env} environment"`, "error");
       process.exit(1);
     }
 

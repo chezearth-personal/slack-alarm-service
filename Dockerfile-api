@@ -16,11 +16,4 @@ COPY ./src/api/ ./src/api/
 
 RUN ./node_modules/.bin/tsc
 
-ARG NODE_ENV="production"
-ENV NODE_ENV $NODE_ENV
-
-ARG PORT=3000
-ENV PORT $PORT
-EXPOSE $PORT
-
 CMD [ "npm", "start" ]

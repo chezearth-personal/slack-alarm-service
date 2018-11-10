@@ -11,6 +11,8 @@ services:
       - ./mongo/config:/data/config
     ports:
       - "27007:27017"
+    networks:
+      - network
 
   rest-api:
     image: node-api
@@ -19,8 +21,13 @@ services:
       dockerfile: Dockerfile-api
     environment:
       NODE_ENV: production
+      MONGO_URL: 'mongodb://slack-alarm-service_mongo-db_1:27017'
+      PORT: 3000
+
     ports:
       - "3000:3000"
+    networks:
+      - network
 
   alarm-server:
     image: node-alarm
@@ -29,3 +36,10 @@ services:
       dockerfile: Dockerfile-alarm
     environment:
       NODE_ENV: production
+      MONGO_URL: 'mongodb://slack-alarm-service_mongo-db_1:27017'
+      SLACK_CHANNEL: '#demo'
+    networks:
+      - network
+
+networks:
+  network:

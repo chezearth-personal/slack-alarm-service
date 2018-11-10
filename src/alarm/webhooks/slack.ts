@@ -3,7 +3,7 @@
 import * as config from "config";
 import * as rp from "request-promise";
 import { logger } from "../../common/helpers/winston"
-import { AlarmDb } from "../../common/types/docs";
+import { SlackBody } from "../types/slack";
 
 
 const errorPrefix: string = `                 - - [${(new Date()).toISOString()}] `
@@ -15,23 +15,12 @@ const options = {
   headers: { "Content-Type": "Application/Json" }
 };
 
-const body = {
-  icon_emoji: config.get("slack_icon_emoji"),
-  channel: config.get("slack_channel"),
-  username: config.get("slack_username"),
-}
 
-export async function postSlack(alarmDetails: AlarmDb): Promise<string> {
+export async function postSlack( slackAlarm: SlackBody): Promise<string> {
 
   try {
 
-    const completeBody = Object.assign(
-      {},
-      body,
-      { text: alarmDetails.name },
-      alarmDetails.iconEmoji ? { icon_emoji: alarmDetails.iconEmoji } : {}
-    );
-    const completeOptions = Object.assign({}, options, { body: JSON.stringify(completeBody) });
+    const completeOptions = Object.assign({}, options, { body: JSON.stringify(slackAlarm) });
     const res: string = await rp(completeOptions);
     return res;
 

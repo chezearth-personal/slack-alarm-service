@@ -1,4 +1,3 @@
-mongoUrl: mongodb://slack-alarm-service_mongo-db_1:27017
 database: alarmServer
 database_connection_retries: 10
 database_connection_wait: 6000

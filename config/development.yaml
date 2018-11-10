@@ -1,9 +1,8 @@
-mongoUrl: mongodb://127.0.0.1:27017
 database: alarmServer
 database_connection_retries: 10
 database_connection_wait: 1000
 unique_alert_times: false
-cron_check_alarms: "*/1 * * * * *"
-slack_channel: "#general"
+cron_check_alarms: '*/1 * * * * *'
+slack_channel: '#general'
 slack_username: webhookbot
-slack_icon_emoji: ":ghost:" # choose an appropriate icon
+slack_icon_emoji: ':ghost:' # choose an appropriate icon

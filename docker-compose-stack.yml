@@ -31,7 +31,7 @@ services:
       - mongoconfig1:/data/configdb
     ports:
       - '27017:27017'
-    replSet: swarmProjects 
+    replSet: swarmProjects
 
   mongo-db2:
     image: mongo:3.6
@@ -46,8 +46,8 @@ services:
       - mongoconfig2:/data/configdb
     ports:
       - '27017:27017'
-    replSet: swarmProjects 
-  
+    replSet: swarmProjects
+
   mongo-db3:
     image: mongo:3.6
     network: mongo
