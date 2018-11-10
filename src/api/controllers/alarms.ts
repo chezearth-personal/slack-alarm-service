@@ -12,7 +12,7 @@ import {
 import { Alarm } from '../../common/types/payloads';
 import { AlarmDb } from '../../common/types/docs';
 import { logger } from '../../common/helpers/winston';
-import { isUnique, payload2doc, doc2payload } from '../models/alarms';
+import { isUnique, payload2doc, doc2payload } from '../helpers/alarms';
 
 
 const uniqueAlertAt: boolean = config.get('unique_alert_times')

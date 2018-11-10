@@ -28,10 +28,10 @@ async function schedulerStart(): Promise<void> {
 
     try {
 
-      //call controllers/getNewAlarms
+      // call db/crud/getNewAlarms
       const alarmsToSend: AlarmDb[] = await getNewAlarms(new Date());
 
-      //webhooks/postSlack function
+      // webhooks/slack/postSlack function
       if(alarmsToSend.length > 0) {
 
         const res: string[] = await Promise.all(

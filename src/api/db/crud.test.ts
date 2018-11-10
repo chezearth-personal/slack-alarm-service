@@ -12,13 +12,11 @@ import { findAlarms } from '../../../dist/api/mocks/alarms';
 import { payload2doc } from '../../../dist/api/models/alarms';
 import { AlarmDb } from '../../../src/common/types/docs';
 
-//const alarmList = require('../../resources/alarm-data.json')
 
 // mocks are useful for testing, call the function to instantiate the time
 const alarmList = findAlarms();
 
 const expect = require('chai').expect;
-//const expect: Chai.ExpectStatic = chai.expect;
 
 
 describe(`'db/crud.ts' tests. Database CRUD`, function() {
