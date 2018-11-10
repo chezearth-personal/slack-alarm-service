@@ -77,7 +77,7 @@ async function dBconnection(count): Promise<void | DbClient> {
   try {
 
     const db: DbClient = await connectDb(url, dbName, wait);
-    if(env !== 'test') logger.write(`"Server connected to and polling database ${url}, hooked onto Slack channel ${slack.channel}" "${env} environment"`);
+    if(env !== 'test') logger.write(`"Server connected to database ${url} and hooked to Slack channel ${slack.channel}" "${env} environment"`);
 
     schedulerStart();
     return db;

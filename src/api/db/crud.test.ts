@@ -1,23 +1,23 @@
-"use strict";
+'use strict';
 
-import { DeleteWriteOpResultObject } from "mongodb";
+import { DeleteWriteOpResultObject } from 'mongodb';
 
 import {
   create,
   deleteAll,
   getMany,
   getOne,
-} from "../../../dist/api/db/crud";
-import { findAlarms } from "../../../dist/api/mocks/alarms";
-import { payload2doc } from "../../../dist/api/models/alarms";
-import { AlarmDb } from "../../../src/common/types/docs";
+} from '../../../dist/api/db/crud';
+import { findAlarms } from '../../../dist/api/mocks/alarms';
+import { payload2doc } from '../../../dist/api/models/alarms';
+import { AlarmDb } from '../../../src/common/types/docs';
 
-//const alarmList = require("../../resources/alarm-data.json")
+//const alarmList = require('../../resources/alarm-data.json')
 
 // mocks are useful for testing, call the function to instantiate the time
 const alarmList = findAlarms();
 
-const expect = require("chai").expect;
+const expect = require('chai').expect;
 //const expect: Chai.ExpectStatic = chai.expect;
 
 
@@ -27,8 +27,8 @@ describe(`'db/crud.ts' tests. Database CRUD`, function() {
 
       try {
 
-        const docs: AlarmDb = await getMany("alarms", {}, {}, {});
-        const del: DeleteWriteOpResultObject["result"] = await deleteAll("alarms");
+        const docs: AlarmDb = await getMany('alarms', {}, {}, {});
+        const del: DeleteWriteOpResultObject['result'] = await deleteAll('alarms');
         expect(docs).to.have.length(del.n);
         return Promise.resolve();
 
@@ -40,15 +40,15 @@ describe(`'db/crud.ts' tests. Database CRUD`, function() {
 
   });
 
-  describe("create documents", function() {
+  describe('create documents', function() {
 
-      it("should create document 0", async function() {
+      it('should create document 0', async function() {
 
         try {
 
           const doc: AlarmDb = payload2doc(alarmList[0]);
-          const res: AlarmDb = await create("alarms", doc);
-            expect(res.name).eqls("Alarm number zero");
+          const res: AlarmDb = await create('alarms', doc);
+            expect(res.name).eqls('Alarm number zero');
             return Promise.resolve();
 
           } catch (e) {
@@ -59,13 +59,13 @@ describe(`'db/crud.ts' tests. Database CRUD`, function() {
 
       });
 
-      it("should create document 1", async function() {
+      it('should create document 1', async function() {
 
         try {
 
           const doc: AlarmDb = payload2doc(alarmList[1]);
-          const res: AlarmDb = await create("alarms", doc);
-          expect(res.name).eqls("Alarm number one");
+          const res: AlarmDb = await create('alarms', doc);
+          expect(res.name).eqls('Alarm number one');
           return Promise.resolve();
 
         } catch(e) {
@@ -79,13 +79,13 @@ describe(`'db/crud.ts' tests. Database CRUD`, function() {
   });
 
 
-  describe("find documents", function() {
+  describe('find documents', function() {
 
-      it("should find all documents", async function() {
+      it('should find all documents', async function() {
 
         try {
 
-          const res: AlarmDb[] = await getMany("alarms", {}, {}, {});
+          const res: AlarmDb[] = await getMany('alarms', {}, {}, {});
           expect(res).to.have.length(2);
           expect(res[1].name).equals(alarmList[1].name);
           return Promise.resolve();
@@ -98,14 +98,14 @@ describe(`'db/crud.ts' tests. Database CRUD`, function() {
 
       });
 
-      it("should find the first document", async function() {
+      it('should find the first document', async function() {
 
         try {
 
-          const res: AlarmDb = await getOne("alarms", alarmList[0].id, {}, {});
+          const res: AlarmDb = await getOne('alarms', alarmList[0].id, {}, {});
           expect(res).eqls({
             _id: alarmList[0].id,
-            name: "Alarm number zero",
+            name: 'Alarm number zero',
             alertAt: new Date(alarmList[0].alertAt)
           });
           return Promise.resolve();

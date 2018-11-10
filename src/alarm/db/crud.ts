@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
-import { Db, DeleteWriteOpResultObject } from "mongodb";
+import { Db, DeleteWriteOpResultObject } from 'mongodb';
 
-import { mongoConn } from "../server";
+import { mongoConn } from '../server';
 import { getDb } from '../../common/db/connector';
-import { AlarmDb } from "../../common/types/docs";
-import { logger } from "../../common/helpers/winston"
+import { AlarmDb } from '../../common/types/docs';
+import { logger } from '../../common/helpers/winston'
 
 
 // const errorPrefix: string = `[${(new Date()).toISOString()}] `
@@ -19,12 +19,12 @@ export async function getNewAlarms(init: Date): Promise<AlarmDb[]> {
     const minTime: Date = new Date(min);
     const maxTime: Date = new Date(min + 1000);
 
-    // console.log("init:", init, ", min:", minTime, ", max:", maxTime);
+    // console.log('init:', init, ', min:', minTime, ', max:', maxTime);
     const db: Db = await getDb(mongoConn);
     // const db: Db | undefined = (await mongoDb).db;
     const alarms: AlarmDb[] = await db
-      .collection("alarms")
-      .find({ alertAt: { "$gte": minTime, "$lt": maxTime } })
+      .collection('alarms')
+      .find({ alertAt: { '$gte': minTime, '$lt': maxTime } })
       .sort({ alertAt: 1 })
       .toArray();
 
@@ -32,7 +32,7 @@ export async function getNewAlarms(init: Date): Promise<AlarmDb[]> {
 
   } catch(e) {
 
-    // console.log("ERROR THROWN (crud.ts/getNewAlarms()):", e);
+    // console.log('ERROR THROWN (crud.ts/getNewAlarms()):', e);
     logger.write(`"${e.message}" "${e.status}"
 ${e.stack}`,"error");
     return Promise.reject(e);
@@ -69,7 +69,7 @@ export async function getMany(col, query, projection, sort): Promise<AlarmDb[]> 
 
 
 // Only used for clearing data in the tests (not tested)
-export async function deleteAll(col: string): Promise<DeleteWriteOpResultObject["result"]> {
+export async function deleteAll(col: string): Promise<DeleteWriteOpResultObject['result']> {
 
   try {
 

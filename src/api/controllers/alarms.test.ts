@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 
-import * as chai from "chai";
+import * as chai from 'chai';
 
-import { findAlarms } from "../../../dist/api/mocks/alarms";
-import { deleteAll } from "../../../dist/api/db/crud";
+import { findAlarms } from '../../../dist/api/mocks/alarms';
+import { deleteAll } from '../../../dist/api/db/crud';
 
 
-const chaiHttp: Chai.ExpectStatic = require("chai-http");
+const chaiHttp: Chai.ExpectStatic = require('chai-http');
 
-const app: Express.Application = require("../../../dist/api/server").default;
+const app: Express.Application = require('../../../dist/api/server').default;
 
 chai.use(chaiHttp);
 const expect = chai.expect;
@@ -17,12 +17,12 @@ const expect = chai.expect;
 const alarmsList = findAlarms();
 
 
-describe("'controllers/tasks.ts' tests. API requests", function() {
+describe(`'controllers/tasks.ts' tests. API requests`, function() {
 
 
   let alarm_id: string; // variable to hold a task's id for the 'GET all' request
 
-  describe("#POST 6 alarms", function() {
+  describe('#POST 6 alarms', function() {
 
     alarmsList.forEach((elem, i) => {
 
@@ -34,8 +34,8 @@ describe("'controllers/tasks.ts' tests. API requests", function() {
 
             const res: ChaiHttp.Response = await chai
               .request(app)
-              .post("/alarms")
-              .type("application/json")
+              .post('/alarms')
+              .type('application/json')
               .send(alarmsList[i])
             expect(res).to.have.status(201);
             expect(res).to.be.json;
@@ -56,15 +56,15 @@ describe("'controllers/tasks.ts' tests. API requests", function() {
 
   });
 
-  describe("#GET all alarms", function() {
+  describe('#GET all alarms', function() {
 
-    it("should get all alarms", async function() {
+    it('should get all alarms', async function() {
 
       try {
 
           const res: ChaiHttp.Response = await chai
             .request(app)
-            .get("/alarms");
+            .get('/alarms');
           alarm_id = res.body[3].id;
           expect(res).to.have.status(200);
           expect(res.body).to.have.length(alarmsList.length);
@@ -80,9 +80,9 @@ describe("'controllers/tasks.ts' tests. API requests", function() {
 
   });
 
-  describe("#GET one alarm", function() {
+  describe('#GET one alarm', function() {
 
-    it("should get an alarm", async function() {
+    it('should get an alarm', async function() {
 
       try {
 

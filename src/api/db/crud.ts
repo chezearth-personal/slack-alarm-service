@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 
 import {
   Db,
   WriteOpResult,
   DeleteWriteOpResultObject
-} from "mongodb";
+} from 'mongodb';
 
-import { mongoConn } from "../../api/server";
-import { AlarmDb } from "../../common/types/docs"
-import { getDb } from "../../common/db/connector"
+import { mongoConn } from '../../api/server';
+import { AlarmDb } from '../../common/types/docs'
+import { getDb } from '../../common/db/connector'
 
 
 // CRUD operations
@@ -21,7 +21,7 @@ export async function create(col: string, doc: AlarmDb): Promise<AlarmDb> {
       .collection(col)
       .insertOne(doc);
 
-    return res.ops["0"];
+    return res.ops['0'];
 
   } catch(e) {
 
@@ -97,7 +97,7 @@ export async function getCount(col, query): Promise<number> {
 
 
 // Only used for clearing data in the tests (not routed)
-export async function deleteAll(col: string): Promise<DeleteWriteOpResultObject["result"]> {
+export async function deleteAll(col: string): Promise<DeleteWriteOpResultObject['result']> {
 
   try {
 
