@@ -10,7 +10,6 @@ import {
   getOne
 } from '../../common/db/crud';
 import { mongoConn } from '../server';
-import { getDb } from '../../common/db/connector';
 
 import { Alarm } from '../../common/types/payloads';
 import { AlarmDb } from '../../common/types/docs';
@@ -32,7 +31,7 @@ export async function createAlarm(req, res, next): Promise<void> {
       'an alarm with the alert date and time already exists'
     );
 
-    const db: Db = await getDb(mongoConn);
+    const db: Db = await mongoConn;
     const doc: AlarmDb = await create(db, 'alarms', reqDoc);
 
     const resPayload: Alarm = doc2payload(doc);
@@ -61,7 +60,7 @@ export async function getAllAlarms(req, res, next): Promise<void> {
 
   try {
 
-    const db: Db = await getDb(mongoConn);
+    const db: Db = await mongoConn;
     const docs: AlarmDb[] = await getMany(
       db,
       'alarms',
@@ -95,7 +94,7 @@ export async function getAlarmDetails(req, res, next): Promise<void> {
 
   try {
 
-    const db: Db = await getDb(mongoConn);
+    const db: Db = await mongoConn;
     const doc: AlarmDb = await getOne(
       db,
       'alarms',

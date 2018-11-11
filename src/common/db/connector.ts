@@ -6,86 +6,55 @@ import { logger } from '../helpers/winston'
 
 import { DbConfig } from '../types/types';
 
-export interface DbClient {
-  db: Db,
-  client: MongoClient
-}
 
+export async function connectDb(uri: string, dbName: string, wait: number): Promise<Db> {
 
-export async function getDb(mongoConn: Promise<DbClient | void>): Promise<Db> {
+  const setTimeoutPromise = util.promisify(setTimeout);
 
   try {
 
-    const dbClient: void | DbClient = await mongoConn;
-    if(!dbClient) throw {
-      message: 'No database connection - check MongoDb is running',
-      status: 400
-    };
+    await setTimeoutPromise(wait);
 
-    return dbClient.db;
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true });
+    // logger.write(`"connected to database ${uri}/${dbName}`)
+
+    return client.db(dbName);
 
   } catch(e) {
 
-    logger.write(`"${e.message}" "${e.status}"
-${e.stack}`,"error");
+
+//       logger.write(`                 ${errorPrefix} "${e.message}" "${e.status}"
+// ${e.stack}`,"error")
     return Promise.reject(e);
 
   }
 
-}
-
-
-export async function connectDb(uri: string, dbName: string, wait: number): Promise<DbClient> {
-
-  let dbClient: DbClient = { client: null, db: null };
-  const setTimeoutPromise = util.promisify(setTimeout);
-  while(dbClient.db === null) {
-
-    try {
-
-      await setTimeoutPromise(wait);
-
-      const client = await MongoClient.connect(uri, { useNewUrlParser: true });
-      dbClient.client = client;
-      dbClient.db = client.db(dbName);
-      // logger.write(`"connected to database ${uri}/${dbName}`)
-      return dbClient;
-
-    } catch(e) {
-
-
-      // logger.write(`                 ${errorPrefix} "${e.message}" "${e.status}"
-// ${e.stack}`,"error")
-      return Promise.reject(e);
-
-    }
-
-  }
 
 }
 
 
-export async function dbConnection(count: number, env: string, dbConfig: DbConfig, serverFunction: () => Promise<any>): Promise<void | DbClient> {
+export async function dbConnection(dbConfig: DbConfig): Promise<Db> {
 
-  if(env !== 'test') logger.write(`"Attempt ${count + 1} connecting to database: ${dbConfig.url}" "${env} environment"`);
+  if(dbConfig.env !== 'test') logger.write(`"Attempt ${dbConfig.count + 1} connecting to database: ${dbConfig.url}" "${dbConfig.env} environment"`);
 
   try {
 
-    const db: DbClient = await connectDb(dbConfig.url, dbConfig.dbName, dbConfig.wait ? dbConfig.wait : 0);
+    const db: Db = await connectDb(dbConfig.url, dbConfig.dbName, dbConfig.wait ? dbConfig.wait : 0);
 
-    if(env !== "test") logger.write(`"Server connected to database: ${dbConfig.url}" "${env} environment"`);
+    if(dbConfig.env !== "test") logger.write(`"Server connected to database: ${dbConfig.url}" "${dbConfig.env} environment"`);
 
-    // Now there is a database connection, we can call SwaggerExpress
-    await serverFunction();
+    // Now there is a database connection, we can call the server functions that come after the connection is established
+    await Promise.all(dbConfig.serverFunctions.map(e => e()));
 
     return db;
 
   } catch(e) {
 
-    if(dbConfig.retries && count + 1 < dbConfig.retries) {
-      return await dbConnection(count + 1, env, dbConfig, serverFunction);
+    if(dbConfig.retries && dbConfig.count + 1 < dbConfig.retries) {
+      const dbConfigNew: DbConfig = Object.assign({}, dbConfig, {count: dbConfig.count + 1})
+      return await dbConnection(dbConfigNew);
     } else {
-      logger.write(`"Server failed to connect to database: ${dbConfig.url}" "${env} environment"`, "error");
+      logger.write(`"Server failed to connect to database: ${dbConfig.url}" "${dbConfig.env} environment"`, "error");
       process.exit(1);
     }
 

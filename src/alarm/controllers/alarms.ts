@@ -3,7 +3,6 @@
 import { Db, DeleteWriteOpResultObject } from 'mongodb';
 
 import { mongoConn } from '../server';
-import { getDb } from '../../common/db/connector';
 import { getMany, deleteAll } from '../../common/db/crud';
 import { AlarmDb } from '../../common/types/docs';
 import { logger } from '../../common/helpers/winston'
@@ -17,7 +16,7 @@ export async function getNewAlarms(init: Date): Promise<AlarmDb[]> {
     const minTime: Date = new Date(min);
     const maxTime: Date = new Date(min + 1000);
 
-    const db: Db = await getDb(mongoConn);
+    const db: Db = await mongoConn;
     const alarms: AlarmDb[] = await getMany(
       db,
       'alarms',
@@ -25,11 +24,6 @@ export async function getNewAlarms(init: Date): Promise<AlarmDb[]> {
       {},
       { alertAt: 1 }
     );
-    // const alarms: AlarmDb[] = await db
-    //   .collection('alarms')
-    //   .find({ alertAt: { '$gte': minTime, '$lt': maxTime } })
-    //   .sort({ alertAt: 1 })
-    //   .toArray();
 
     return alarms;
 
@@ -74,18 +68,14 @@ export async function removeAll(col: string): Promise<DeleteWriteOpResultObject[
 
   try {
 
-    const db: Db = await getDb(mongoConn);
+    const db: Db = await mongoConn;
 
     const res: DeleteWriteOpResultObject['result'] = await deleteAll(
       db,
       col
     );
-    // const res: DeleteWriteOpResultObject = await db
-    //   .collection(col)
-    //   .deleteMany({})
 
     return res;
-    // return res.result;
 
   } catch(e) {
 

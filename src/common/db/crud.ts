@@ -6,9 +6,7 @@ import {
   DeleteWriteOpResultObject
 } from 'mongodb';
 
-// import { mongoConn } from '../../api/server';
 import { AlarmDb } from '../../common/types/docs'
-import { getDb } from '../../common/db/connector'
 
 
 // CRUD operations
@@ -16,7 +14,6 @@ export async function create(db: Db, col: string, doc: AlarmDb): Promise<AlarmDb
 
   try {
 
-    // const db: Db = await getDb(mongoConn);
     const res: WriteOpResult = await db
       .collection(col)
       .insertOne(doc);
@@ -35,8 +32,6 @@ export async function create(db: Db, col: string, doc: AlarmDb): Promise<AlarmDb
 export async function getMany(db: Db, col: string, query, projection, sort): Promise<AlarmDb[]> {
 
   try {
-
-    // const db: Db =  await getDb(mongoConn);
 
     const results: AlarmDb[] = await db
       .collection(col)
@@ -59,8 +54,6 @@ export async function getOne(db: Db, col: string, id: string, otherQueryParams: 
 
   try {
 
-    // const db: Db = await getDb(mongoConn);
-
     const opQuery: any = Object.assign({ _id: id }, otherQueryParams);
     const result: AlarmDb = await db
       .collection(col)
@@ -81,8 +74,6 @@ export async function getCount(db: Db, col: string, query): Promise<number> {
 
   try {
 
-    // const db: Db = await getDb(mongoConn);
-
     const num: number = await db
       .collection(col).find(query).count();
 
@@ -100,8 +91,6 @@ export async function getCount(db: Db, col: string, query): Promise<number> {
 export async function deleteAll(db: Db, col: string): Promise<DeleteWriteOpResultObject['result']> {
 
   try {
-
-    // const db: Db = await getDb(mongoConn);
 
     const res: DeleteWriteOpResultObject = await db
       .collection(col)

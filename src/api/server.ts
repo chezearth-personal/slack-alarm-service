@@ -4,10 +4,11 @@ import * as config from 'config';
 import * as express from 'express';
 import * as morgan from 'morgan';
 import * as SwaggerExpress from '@chezearth/swagger-express-mw';
+import { Db } from 'mongodb';
 
 import { logger } from '../common/helpers/winston';
 
-import { dbConnection, DbClient } from '../common/db/connector';
+import { dbConnection } from '../common/db/connector';
 
 import { DbConfig } from '../common/types/types';
 
@@ -24,7 +25,12 @@ const swaggerConfig: SwaggerExpress.Config = {
 };
 
 
-async function swaggerCreate(): Promise<void> {
+/*
+ * Swagger middleware. Conbined with Express and processes requests
+ * and responses.
+ *
+ */
+ async function swaggerCreate(): Promise<void> {
 
   // start the server...
   SwaggerExpress.create(swaggerConfig, function(err, swaggerExpress) {
@@ -55,15 +61,24 @@ async function swaggerCreate(): Promise<void> {
 }
 
 
-// Mongo DB connection. Returned as a promise which resolves quite quickly but is awaited if the connection is used.
+/*
+ * Mongo DB config and connection. Config contains a reference to
+ * any functions above as well as important parameters for
+ * establishing the connection. Returned as a promise which gets
+ * passed to controllers can only be used there once resolved.
+ *
+ */
 const dbConfig: DbConfig = {
+  count: 0,
+  env: env,
   url: process.env.MONGO_URL || 'mongodb://127.0.0.1:27017',
   dbName: config.get('database').toString() || 'alarmServer',
   wait: Number(config.get('database_connection_wait')) || 6000,
-  retries: Number(config.get('database_connection_retries')) || 10
+  retries: Number(config.get('database_connection_retries')) || 10,
+  serverFunctions: [ swaggerCreate ]
 }
 
-export const mongoConn: Promise<void | DbClient> = dbConnection(0, env, dbConfig, swaggerCreate);
+export const mongoConn: Promise<Db> = dbConnection(dbConfig);
 
 
 export default app; // for testing
