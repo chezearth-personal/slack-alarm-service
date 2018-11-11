@@ -4,21 +4,21 @@ import { Db, MongoClient } from 'mongodb';
 import * as util from 'util';
 import { logger } from '../helpers/winston'
 
-import { DbConfig } from '../types/types';
+import { DbConfig, DbConnect } from '../types/types';
 
 
-export async function connectDb(uri: string, dbName: string, wait: number): Promise<Db> {
+export async function connectDb(dbConnect: DbConnect): Promise<Db> {
 
   const setTimeoutPromise = util.promisify(setTimeout);
 
   try {
 
-    await setTimeoutPromise(wait);
+    await setTimeoutPromise(dbConnect.wait);
 
-    const client = await MongoClient.connect(uri, { useNewUrlParser: true });
+    const client = await MongoClient.connect(dbConnect.url, { useNewUrlParser: true });
     // logger.write(`"connected to database ${uri}/${dbName}`)
 
-    return client.db(dbName);
+    return client.db(dbConnect.dbName);
 
   } catch(e) {
 
@@ -39,7 +39,12 @@ export async function dbConnection(dbConfig: DbConfig): Promise<Db> {
 
   try {
 
-    const db: Db = await connectDb(dbConfig.url, dbConfig.dbName, dbConfig.wait ? dbConfig.wait : 0);
+    const dbConnect = {
+      url: dbConfig.url,
+      dbName: dbConfig.dbName,
+      wait: dbConfig.wait ? dbConfig.wait : 0
+    }
+    const db: Db = await connectDb(dbConnect);
 
     if(dbConfig.env !== "test") logger.write(`"Server connected to database: ${dbConfig.url}" "${dbConfig.env} environment"`);
 
