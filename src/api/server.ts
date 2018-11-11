@@ -7,7 +7,9 @@ import * as SwaggerExpress from '@chezearth/swagger-express-mw';
 
 import { logger } from '../common/helpers/winston';
 
-import { connectDb, DbClient } from '../common/db/connector';
+import { dbConnection, DbClient } from '../common/db/connector';
+
+import { DbConfig } from '../common/types/types';
 
 
 // Node environment
@@ -53,42 +55,15 @@ async function swaggerCreate(): Promise<void> {
 }
 
 
-async function dBconnection(count: number): Promise<void | DbClient> {
-
-  // Mongo DB connection. Returned as a promise which resolves quite quickly but is awaited if the connection is used.
-  const url: string = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017';
-  const dbName: string = config.get('database') || 'alarmServer';
-  const wait: number = Number(config.get('database_connection_wait')) || 6000;
-  const retries: number = Number(config.get('database_connection_retries')) || 10;
-
-  if(env !== 'test') logger.write(`"Attempt ${count + 1} connecting to database: ${url}" "${env} environment"`);
-
-  try {
-
-    const db: DbClient = await connectDb(url, dbName, wait);
-
-    if(env !== "test") logger.write(`"Server connected to database: ${url}" "${env} environment"`);
-
-    // Now there is a database connection, we can call SwaggerExpress
-    await swaggerCreate();
-
-    return db;
-
-  } catch(e) {
-
-    if(count + 1 < retries) {
-      return await dBconnection(count + 1);
-    } else {
-      logger.write(`"Server failed to connect to database: ${url}" "${env} environment"`, "error");
-      process.exit(1);
-    }
-
-  }
-
+// Mongo DB connection. Returned as a promise which resolves quite quickly but is awaited if the connection is used.
+const dbConfig: DbConfig = {
+  url: process.env.MONGO_URL || 'mongodb://127.0.0.1:27017',
+  dbName: config.get('database').toString() || 'alarmServer',
+  wait: Number(config.get('database_connection_wait')) || 6000,
+  retries: Number(config.get('database_connection_retries')) || 10
 }
 
-
-export const mongoConn: Promise<void | DbClient> = dBconnection(0);
+export const mongoConn: Promise<void | DbClient> = dbConnection(0, env, dbConfig, swaggerCreate);
 
 
 export default app; // for testing

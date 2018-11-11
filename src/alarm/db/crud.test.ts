@@ -3,7 +3,7 @@
 import * as chai from 'chai';
 
 import { AlarmDb } from '../../common/types/docs';
-import { getNewAlarms, getMany, deleteAll } from '../../../dist/alarm/db/crud';
+import { getNewAlarms, getMany, removeAll } from '../../../dist/alarm/db/crud';
 
 
 const expect = chai.expect;
@@ -21,7 +21,7 @@ describe(`'controllers/alarms.ts' tests. Collecting alarms from database`, funct
         process.env.CLEAN_TEST
           && ['true', 'yes', 'y', 't']
             .includes(process.env.CLEAN_TEST.toLowerCase())
-      ) await deleteAll('alarms');
+      ) await removeAll('alarms');
       return Promise.resolve();
 
     } catch(e) {

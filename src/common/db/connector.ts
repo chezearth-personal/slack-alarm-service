@@ -4,6 +4,8 @@ import { Db, MongoClient } from 'mongodb';
 import * as util from 'util';
 import { logger } from '../helpers/winston'
 
+import { DbConfig } from '../types/types';
+
 export interface DbClient {
   db: Db,
   client: MongoClient
@@ -56,6 +58,35 @@ export async function connectDb(uri: string, dbName: string, wait: number): Prom
 // ${e.stack}`,"error")
       return Promise.reject(e);
 
+    }
+
+  }
+
+}
+
+
+export async function dbConnection(count: number, env: string, dbConfig: DbConfig, serverFunction: () => Promise<any>): Promise<void | DbClient> {
+
+  if(env !== 'test') logger.write(`"Attempt ${count + 1} connecting to database: ${dbConfig.url}" "${env} environment"`);
+
+  try {
+
+    const db: DbClient = await connectDb(dbConfig.url, dbConfig.dbName, dbConfig.wait ? dbConfig.wait : 0);
+
+    if(env !== "test") logger.write(`"Server connected to database: ${dbConfig.url}" "${env} environment"`);
+
+    // Now there is a database connection, we can call SwaggerExpress
+    await serverFunction();
+
+    return db;
+
+  } catch(e) {
+
+    if(dbConfig.retries && count + 1 < dbConfig.retries) {
+      return await dbConnection(count + 1, env, dbConfig, serverFunction);
+    } else {
+      logger.write(`"Server failed to connect to database: ${dbConfig.url}" "${env} environment"`, "error");
+      process.exit(1);
     }
 
   }

@@ -1,6 +1,9 @@
 'use strict';
 
-import { getCount } from '../db/crud';
+import { Db } from 'mongodb';
+import { getCount } from '../../common/db/crud';
+import { getDb } from '../../common/db/connector';
+import { mongoConn } from '../server';
 import { Alarm } from '../../common/types/payloads'
 
 
@@ -17,7 +20,8 @@ export async function isUnique(obj: any): Promise<boolean> {
 
   try {
 
-    const result: any = await getCount('alarms', obj);
+    const db: Db = await getDb(mongoConn);
+    const result: any = await getCount(db, 'alarms', obj);
     return result === 0;
 
   } catch(e) {

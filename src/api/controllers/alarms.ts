@@ -2,12 +2,15 @@
 
 import * as assert from 'assert';
 import * as config from 'config';
+import { Db } from 'mongodb';
 
 import {
   create,
   getMany,
   getOne
-} from '../db/crud';
+} from '../../common/db/crud';
+import { mongoConn } from '../server';
+import { getDb } from '../../common/db/connector';
 
 import { Alarm } from '../../common/types/payloads';
 import { AlarmDb } from '../../common/types/docs';
@@ -29,8 +32,8 @@ export async function createAlarm(req, res, next): Promise<void> {
       'an alarm with the alert date and time already exists'
     );
 
-
-    const doc: AlarmDb = await create('alarms', reqDoc);
+    const db: Db = await getDb(mongoConn);
+    const doc: AlarmDb = await create(db, 'alarms', reqDoc);
 
     const resPayload: Alarm = doc2payload(doc);
     res
@@ -58,7 +61,9 @@ export async function getAllAlarms(req, res, next): Promise<void> {
 
   try {
 
+    const db: Db = await getDb(mongoConn);
     const docs: AlarmDb[] = await getMany(
+      db,
       'alarms',
       {},
       {},
@@ -90,7 +95,9 @@ export async function getAlarmDetails(req, res, next): Promise<void> {
 
   try {
 
+    const db: Db = await getDb(mongoConn);
     const doc: AlarmDb = await getOne(
+      db,
       'alarms',
       req.swagger.params.id.value,
       {},
