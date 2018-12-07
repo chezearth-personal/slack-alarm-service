@@ -1,61 +1,66 @@
-"use strict";
+'use strict';
 
-import { Db, MongoClient } from "mongodb";
+import { Db, MongoClient } from 'mongodb';
 import * as util from 'util';
-import { logger } from "../helpers/winston"
+import { logger } from '../helpers/winston'
 
-export interface DbClient {
-  db: Db,
-  client: MongoClient
-}
+import { DbConfig, DbConnect } from '../types/types';
 
 
-export async function getDb(mongoConn: Promise<DbClient | void>): Promise<Db> {
+export async function connectDb(dbConnect: DbConnect): Promise<Db> {
+
+  const setTimeoutPromise = util.promisify(setTimeout);
 
   try {
 
-    const dbClient: void | DbClient = await mongoConn;
-    if(!dbClient) throw {
-      message: 'No database connection - check MongoDb is running',
-      status: 400
-    };
+    await setTimeoutPromise(dbConnect.wait);
 
-    return dbClient.db;
+    const client = await MongoClient.connect(dbConnect.url, { useNewUrlParser: true });
+    // logger.write(`"connected to database ${uri}/${dbName}`)
+
+    return client.db(dbConnect.dbName);
 
   } catch(e) {
 
-    logger.write(`"${e.message}" "${e.status}"
-${e.stack}`,"error");
+
+//       logger.write(`                 ${errorPrefix} "${e.message}" "${e.status}"
+// ${e.stack}`,"error")
     return Promise.reject(e);
 
   }
 
+
 }
 
 
-export async function connectDb(uri: string, dbName: string, wait: number): Promise<DbClient> {
+export async function dbConnection(dbConfig: DbConfig): Promise<Db> {
 
-  let dbClient: DbClient = { client: null, db: null };
-  const setTimeoutPromise = util.promisify(setTimeout);
-  while(dbClient.db === null) {
+  if(dbConfig.env !== 'test') logger.write(`"Attempt ${dbConfig.count + 1} connecting to database: ${dbConfig.url}" "${dbConfig.env} environment"`);
 
-    try {
+  try {
 
-      await setTimeoutPromise(wait);
+    const dbConnect = {
+      url: dbConfig.url,
+      dbName: dbConfig.dbName,
+      wait: dbConfig.wait ? dbConfig.wait : 0
+    }
+    const db: Db = await connectDb(dbConnect);
 
-      const client = await MongoClient.connect(uri, { useNewUrlParser: true });
-      dbClient.client = client;
-      dbClient.db = client.db(dbName);
-      logger.write(`"connected to database ${uri}/${dbName}`)
-      return dbClient;
+    if(dbConfig.env !== "test") logger.write(`"Server connected to database: ${dbConfig.url}" "${dbConfig.env} environment"`);
 
-    } catch(e) {
+    // Now there is a database connection, we can call the server functions that come after the connection is established
+    await Promise.all(dbConfig.serverFunctions.map(e => e()));
 
+    return db;
 
-      // logger.write(`                 ${errorPrefix} "${e.message}" "${e.status}"
-// ${e.stack}`,"error")
-      return Promise.reject(e);
+  } catch(e) {
 
+    if(dbConfig.retries && dbConfig.count + 1 < dbConfig.retries) {
+      const dbConfigNew: DbConfig = Object.assign({}, dbConfig, {count: dbConfig.count + 1})
+      return await dbConnection(dbConfigNew);
+    } else {
+      logger.write(`"Server failed to connect to database: ${dbConfig.url}" "${dbConfig.env} environment"`, "error");
+      process.exit(1);
     }
 
   }

@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
-import * as winston from "winston";
-import { util } from "config";
+import * as winston from 'winston';
+import { util } from 'config';
 
 
 function msgParser(msg: string, timestamp: string): string {
-  return msg.substring(0, 6) === "MORGAN"
+  return msg.substring(0, 6) === 'MORGAN'
     ? msg.substring(6)
     : `::ffff:127.0.0.1 - - [${timestamp}] ${msg}`;
 }
@@ -13,7 +13,7 @@ function msgParser(msg: string, timestamp: string): string {
 /*
 const options: winston.LoggerOptions = {
   console: {
-    level: "info",
+    level: 'info',
     handleExceptions: true,
     json: false,
     colorize: true
@@ -21,7 +21,7 @@ const options: winston.LoggerOptions = {
 };
 */
 
-const logging: winston.LoggerInstance = util.getEnv('NODE_ENV') !== "test"
+const logging: winston.LoggerInstance = util.getEnv('NODE_ENV') !== 'test'
   ? new (winston.Logger)({
     transports: [
       new winston.transports.Console({
@@ -35,7 +35,7 @@ const logging: winston.LoggerInstance = util.getEnv('NODE_ENV') !== "test"
   : new (winston.Logger)({
     transports: [
       new winston.transports.File({
-        filename: "test.log",
+        filename: 'test.log',
         exitOnError: false,
         json: false,
         timestamp: () => (new Date).toISOString(),
@@ -48,10 +48,10 @@ const logging: winston.LoggerInstance = util.getEnv('NODE_ENV') !== "test"
 class Stream {
 
   write(text: string, level?: string): void {
-    logging.log(level || "info", text.trim());
+    logging.log(level || 'info', text.trim());
   }
 
-  done = (cb) => logging.on("logging", cb);
+  done = (cb) => logging.on('logging', cb);
 
 }
 

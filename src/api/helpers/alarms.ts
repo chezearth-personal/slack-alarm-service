@@ -1,7 +1,10 @@
-"use strict";
+'use strict';
 
-import { getCount } from "../db/crud";
-import { Alarm } from "../../common/types/payloads"
+import { Db } from 'mongodb';
+import { getCount } from '../../common/db/crud';
+// import { getDb } from '../../common/db/connector';
+import { mongoConn } from '../server';
+import { Alarm } from '../../common/types/payloads'
 
 
 const buildField = <T>(key: string, value: any, o?: T) => {
@@ -17,7 +20,8 @@ export async function isUnique(obj: any): Promise<boolean> {
 
   try {
 
-    const result: any = await getCount("alarms", obj);
+    const db: Db = await mongoConn;
+    const result: any = await getCount(db, 'alarms', obj);
     return result === 0;
 
   } catch(e) {
@@ -28,12 +32,12 @@ export async function isUnique(obj: any): Promise<boolean> {
 }
 
 
-const string2date = (key: string, value: any) => key === "alertAt"
+const string2date = (key: string, value: any) => key === 'alertAt'
   ? buildField(key, new Date(value))
   : buildField(key, value);
 
 
-const date2string = (key: string, value: any) => key === "alertAt"
+const date2string = (key: string, value: any) => key === 'alertAt'
   ? buildField(key, value.toISOString())
   : buildField(key, value);
 
@@ -41,7 +45,7 @@ const date2string = (key: string, value: any) => key === "alertAt"
 export const payload2doc = <T>(payload: T) => Object.keys(payload)
   .reduce((obj, key) => Object.assign(
     obj,
-    key === "id"
+    key === 'id'
       ? { _id: payload[key] }
       : string2date(key, payload[key])
   ), {});
@@ -50,7 +54,7 @@ export const payload2doc = <T>(payload: T) => Object.keys(payload)
 export const doc2payload = <T>(payload: T) => Object.keys(payload)
   .reduce((obj, key) => Object.assign(
     obj,
-    key === "_id"
+    key === '_id'
       ? { id: payload[key] }
       : date2string(key, payload[key])
   ), {});

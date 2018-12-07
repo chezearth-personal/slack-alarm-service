@@ -1,6 +1,6 @@
 {
   "name": "slack-alarm-service",
-  "version": "1.0.79",
+  "version": "1.1.1",
   "private": true,
   "description": "Slack Alarm Micorservice API",
   "keywords": [],
@@ -53,7 +53,7 @@
     "clean": "rimraf ./dist",
     "start": "node dist/api/server.js",
     "alarm": "node dist/alarm/server.js",
-    "test": "export NODE_ENV=test && export CLEAN_TEST=yes && mocha -c -w dist/**/* --reporter spec --require ts-node/register 'src/common/**/*.test.ts' 'src/api/db/*.test.ts' 'src/api/controllers/*.test.ts' 'src/api/models/*.test.ts' 'src/alarm/**/*.test.ts'",
+    "test": "export MONGO_URL=mongodb://127.0.0.1:27017 && export NODE_ENV=test && export CLEAN_TEST=yes && mocha -c --reporter spec --exit --require ts-node/register 'src/common/**/*.test.ts' 'src/api/db/*.test.ts' 'src/api/controllers/*.test.ts' 'src/api/models/*.test.ts' 'src/alarm/**/*.test.ts'",
     "commit": "read -p \"Enter git message: \" message && git add . && git status && git commit -m \"${message}\" && npm version patch"
   }
 }

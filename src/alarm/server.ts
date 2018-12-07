@@ -1,39 +1,55 @@
-"use strict";
+'use strict';
 
-import * as config from "config";
-import * as schedule from "node-schedule";
-// import { DbClient } from "mongodb";
+import * as config from 'config';
+import * as schedule from 'node-schedule';
+import { Db } from 'mongodb';
 
-import { getNewAlarms } from "./db/crud";
-import { postSlack } from "./webhooks/slack";
-import { AlarmDb } from "../common/types/docs";
+import { getNewAlarms } from './controllers/alarms';
+import { postSlack } from './webhooks/slack';
+import { AlarmDb } from '../common/types/docs';
 
-import { logger } from "../common/helpers/winston";
-import { connectDb, DbClient } from '../common/db/connector';
+import { logger } from '../common/helpers/winston';
+import { dbConnection } from '../common/db/connector';
 
-
-const env: string = config.util.getEnv("NODE_ENV") || "development";
-const wait: number = Number(config.get("database_connection_wait")) || 6000;
-const retries: number = Number(config.get("database_connection_retries")) || 10;
-const slack_channel: string = config.get("slack_channel"); // || "#general";
-const slack_username: string = config.get("slack_username") || "webhookbot";
+import { SlackWebHook, SlackBody } from './types/slack';
+import { DbConfig } from '../common/types/types';
 
 
+const env: string = config.util.getEnv('NODE_ENV') || 'development';
+const slack: SlackWebHook = {
+  channel: process.env.SLACK_CHANNEL
+    || config.get('slack_channel').toString()
+    || '#general',
+  userName: config.get('slack_username') || 'webhookbot'
+}
+
+/*
+ * Scheduler. Runs the function at the appointed times (every
+ * second).
+ *
+ */
 async function schedulerStart(): Promise<void> {
 
-  schedule.scheduleJob(config.get("cron_check_alarms"), async () => {
+  schedule.scheduleJob(config.get('cron_check_alarms').toString(), async () => {
 
     try {
 
-      //call controllers/getNewAlarms
+      // call db/crud/getNewAlarms
       const alarmsToSend: AlarmDb[] = await getNewAlarms(new Date());
 
-      //webhooks/postSlack function
+      // webhooks/slack/postSlack function
       if(alarmsToSend.length > 0) {
 
-        const res: string[] = await Promise.all(alarmsToSend.map(async (e) => await postSlack(e)));
+        const res: string[] = await Promise.all(
+          alarmsToSend.map(async alarm => await postSlack(Object.assign(
+              slack,
+              { text: alarm.name },
+              { icon_emoji: alarm.iconEmoji ? alarm.iconEmoji : config.get('slack_icon_emoji').toString() }
+            ))
+          )
+        );
 
-        if(env !== "test") logger.write(`"sending ${res.length} alarm messag${res.length > 1 ? 'e' : 'es'} with 'alertAt' times: ${alarmsToSend.map(alarm => alarm.alertAt)} to slack from '${slack_username}' on the ${slack_channel} channel" "results: ${res}"`);
+        if(env !== 'test') logger.write(`"sending ${res.length} alarm messag${res.length > 1 ? 'e' : 'es'} with 'alertAt' times: ${alarmsToSend.map(alarm => alarm.alertAt)} to slack from '${slack.userName}' on the ${slack.channel} channel" "results: ${res}"`);
       }
 
     } catch(e) {
@@ -47,30 +63,21 @@ async function schedulerStart(): Promise<void> {
 }
 
 
-// Mongo DB connection. Returned as a promise which resolves quite quickly. The promise is awaited each time the connection is used
-const url: string = config.get("mongoUrl") || "mongodb://127.0.0.1:27017";
-const dbName: string = config.get("database") || "alarmServer";
-
-async function dBconnection(count): Promise<void | DbClient> {
-
-  console.log("slack_channel =", slack_channel)
-  if(env !== "test") logger.write(`"Attempt ${count + 1} connecting to database" "${env} environment"`);
-  try {
-    const db: DbClient = await connectDb(url, dbName, wait);
-    if(env !== "test") logger.write(`"Server connected to and polling database" "${env} environment"`);
-    schedulerStart();
-    return db;
-  } catch(e) {
-
-    if(count + 1 < retries) {
-      return await dBconnection(count + 1);
-    } else {
-      logger.write(`"Server failed to connect to database" "${env} environment"`, "error");
-      process.exit(1);
-    }
-
-  }
+/*
+ * Mongo DB config and connection. Config contains a reference to
+ * any functions above as well as important parameters for
+ * establishing the connection. Returned as a promise which gets
+ * passed to controllers can only be used there once resolved.
+ *
+ */
+const dbConfig: DbConfig = {
+  count: 0,
+  env: env,
+  url: process.env.MONGO_URL || 'mongodb://127.0.0.1:27017',
+  dbName: config.get('database').toString() || 'alarmServer',
+  wait: Number(config.get('database_connection_wait')) || 6000,
+  retries: Number(config.get('database_connection_retries')) || 10,
+  serverFunctions: [ schedulerStart ]
 }
 
-
-export const mongoConn: Promise<void | DbClient> = dBconnection(0);
+export const mongoConn: Promise<Db> = dbConnection(dbConfig);
