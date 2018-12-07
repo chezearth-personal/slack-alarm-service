@@ -3,7 +3,7 @@
 import * as config from "config";
 import * as express from "express";
 import * as morgan from "morgan";
-import * as SwaggerExpress from "@chezearth/swagger-express-mw";
+import * as SwaggerExpress from "swagger-express-mw";
 
 import { logger } from "../common/helpers/winston";
 

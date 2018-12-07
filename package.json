@@ -8,7 +8,7 @@
   "license": "",
   "main": "dist/api/server.js",
   "dependencies": {
-    "@chezearth/swagger-express-mw": "^0.7.2",
+    "swagger-express-mw": "^0.7.0",
     "config": "^2.0.1",
     "express": "^4.12.3",
     "mime": "^2.3.1",
@@ -53,7 +53,7 @@
     "clean": "rimraf ./dist",
     "start": "node dist/api/server.js",
     "alarm": "node dist/alarm/server.js",
-    "test": "export NODE_ENV=test && export CLEAN_TEST=yes && mocha -c --reporter spec --exit --require ts-node/register 'src/common/**/*.test.ts' 'src/api/db/*.test.ts' 'src/api/controllers/*.test.ts' 'src/api/models/*.test.ts' 'src/alarm/**/*.test.ts'",
+    "test": "export NODE_ENV=test && export CLEAN_TEST=yes && mocha -c -w dist/**/* --reporter spec --require ts-node/register 'src/common/**/*.test.ts' 'src/api/db/*.test.ts' 'src/api/controllers/*.test.ts' 'src/api/models/*.test.ts' 'src/alarm/**/*.test.ts'",
     "commit": "read -p \"Enter git message: \" message && git add . && git status && git commit -m \"${message}\" && npm version patch"
   }
 }

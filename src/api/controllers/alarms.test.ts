@@ -3,7 +3,7 @@
 import * as chai from "chai";
 
 import { findAlarms } from "../../../dist/api/mocks/alarms";
-import { deleteAll } from "../../../dist/api/db/crud";
+// import { deleteAll } from "../../../dist/api/db/crud";
 
 
 const chaiHttp: Chai.ExpectStatic = require("chai-http");
@@ -17,7 +17,7 @@ const expect = chai.expect;
 const alarmsList = findAlarms();
 
 
-describe("'controllers/tasks.ts' tests. API requests", function() {
+describe("'controllers/alarms.ts' tests. API requests", function() {
 
 
   let alarm_id: string; // variable to hold a task's id for the 'GET all' request
@@ -34,7 +34,7 @@ describe("'controllers/tasks.ts' tests. API requests", function() {
 
             const res: ChaiHttp.Response = await chai
               .request(app)
-              .post("/alarms")
+              .post("/api/v1/alarms")
               .type("application/json")
               .send(alarmsList[i])
             expect(res).to.have.status(201);
@@ -64,7 +64,7 @@ describe("'controllers/tasks.ts' tests. API requests", function() {
 
           const res: ChaiHttp.Response = await chai
             .request(app)
-            .get("/alarms");
+            .get("/api/v1/alarms");
           alarm_id = res.body[3].id;
           expect(res).to.have.status(200);
           expect(res.body).to.have.length(alarmsList.length);
@@ -88,7 +88,7 @@ describe("'controllers/tasks.ts' tests. API requests", function() {
 
         const res: ChaiHttp.Response = await chai
           .request(app)
-          .get(`/alarms/${alarm_id}`);
+          .get(`/api/v1/alarms/${alarm_id}`);
         expect(res).to.have.status(200);
         expect(res.body).to.deep.equal(Object.assign(
           {},

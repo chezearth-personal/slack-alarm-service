@@ -10,7 +10,7 @@ function msgParser(msg: string, timestamp: string): string {
     : `::ffff:127.0.0.1 - - [${timestamp}] ${msg}`;
 }
 
-
+/*
 const options: winston.LoggerOptions = {
   console: {
     level: "info",
@@ -19,7 +19,7 @@ const options: winston.LoggerOptions = {
     colorize: true
   }
 };
-
+*/
 
 const logging: winston.LoggerInstance = util.getEnv('NODE_ENV') !== "test"
   ? new (winston.Logger)({
