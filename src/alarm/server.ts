@@ -11,7 +11,7 @@ import { AlarmDb } from '../common/types/docs';
 import { logger } from '../common/helpers/winston';
 import { dbConnection } from '../common/db/connector';
 
-import { SlackWebHook, SlackBody } from './types/slack';
+import { SlackWebHook } from './types/slack';
 import { DbConfig } from '../common/types/types';
 
 
@@ -28,6 +28,7 @@ const slack: SlackWebHook = {
  * second).
  *
  */
+
 async function schedulerStart(): Promise<void> {
 
   schedule.scheduleJob(config.get('cron_check_alarms').toString(), async () => {
@@ -38,24 +39,29 @@ async function schedulerStart(): Promise<void> {
       const alarmsToSend: AlarmDb[] = await getNewAlarms(new Date());
 
       // webhooks/slack/postSlack function
-      if(alarmsToSend.length > 0) {
+      if (alarmsToSend.length > 0) {
 
         const res: string[] = await Promise.all(
-          alarmsToSend.map(async alarm => await postSlack(Object.assign(
-              slack,
-              { text: alarm.name },
-              { icon_emoji: alarm.iconEmoji ? alarm.iconEmoji : config.get('slack_icon_emoji').toString() }
-            ))
-          )
+          alarmsToSend.map(async (alarm: AlarmDb): Promise<string> => await postSlack(
+            Object.assign(
+              {
+                text: alarm.name,
+                icon_emoji: alarm.iconEmoji
+                  ? alarm.iconEmoji
+                  : config.get('slack_icon_emoji').toString()
+              },
+              slack
+            )
+          ))
         );
 
-        if(env !== 'test') logger.write(`"sending ${res.length} alarm messag${res.length > 1 ? 'e' : 'es'} with 'alertAt' times: ${alarmsToSend.map(alarm => alarm.alertAt)} to slack from '${slack.userName}' on the ${slack.channel} channel" "results: ${res}"`);
+        if (env !== 'test') logger.write(`"sending ${res.length} alarm messag${res.length > 1 ? 'e' : 'es'} with 'alertAt' times: ${alarmsToSend.map(alarm => alarm.alertAt)} to slack from '${slack.userName}' on the ${slack.channel} channel" "results: ${res}"`);
       }
 
-    } catch(e) {
+    } catch (e) {
 
       logger.write(`"${e.message}" "${e.status}"
-  ${e.stack}`,"error")
+  ${e.stack}`, "error")
     }
 
   });
@@ -77,7 +83,7 @@ const dbConfig: DbConfig = {
   dbName: config.get('database').toString() || 'alarmServer',
   wait: Number(config.get('database_connection_wait')) || 6000,
   retries: Number(config.get('database_connection_retries')) || 10,
-  serverFunctions: [ schedulerStart ]
+  serverFunctions: [schedulerStart]
 }
 
 export const mongoConn: Promise<Db> = dbConnection(dbConfig);
