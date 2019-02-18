@@ -26,11 +26,10 @@ const swaggerConfig: SwaggerExpress.Config = {
 
 
 /*
- * Swagger middleware. Conbined with Express and processes requests
+ * Swagger middleware. Conbined with Express; processes and validates requests
  * and responses.
- *
  */
- async function swaggerCreate(): Promise<void> {
+async function swaggerCreate(): Promise<void> {
 
   // start the server...
   SwaggerExpress.create(swaggerConfig, function(err, swaggerExpress) {
@@ -39,8 +38,8 @@ const swaggerConfig: SwaggerExpress.Config = {
 
 
     // unless in test env, use morgan to log requests
-    if(env !== 'test') {
-      app.use(morgan(`MORGAN:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time[digits]ms` , { stream: logger }));
+    if (env !== 'test') {
+      app.use(morgan(`MORGAN:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time[digits]ms`, { stream: logger }));
     }
 
 
@@ -54,7 +53,7 @@ const swaggerConfig: SwaggerExpress.Config = {
 
 
     // Start up message
-    if(env !== 'test') logger.write(`"Server started and listening on localhost:${port}" "${env} environment"`);
+    if (env !== 'test') logger.write(`"Server started and listening on localhost:${port}" "${env} environment"`);
 
   });
 
@@ -66,7 +65,6 @@ const swaggerConfig: SwaggerExpress.Config = {
  * any functions above as well as important parameters for
  * establishing the connection. Returned as a promise which gets
  * passed to controllers can only be used there once resolved.
- *
  */
 const dbConfig: DbConfig = {
   count: 0,
@@ -75,7 +73,7 @@ const dbConfig: DbConfig = {
   dbName: config.get('database').toString() || 'alarmServer',
   wait: Number(config.get('database_connection_wait')) || 6000,
   retries: Number(config.get('database_connection_retries')) || 10,
-  serverFunctions: [ swaggerCreate ]
+  serverFunctions: [swaggerCreate]
 }
 
 export const mongoConn: Promise<Db> = dbConnection(dbConfig);

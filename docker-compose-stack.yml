@@ -22,9 +22,14 @@ services:
     image: mongo:3.6
     network: mongo
     deploy:
-      replicas: 1
+      mode: global
       placement:
         constraints: [ 'node.labels.mongo.replica == 1' ]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+        window: 120s
     networks: [ mongo ]
     volumes:
       - mongodata1:/data/db
@@ -37,9 +42,14 @@ services:
     image: mongo:3.6
     network: mongo
     deploy:
-      replicas: 1
+      mode: global
       placement:
         constraints: [ 'node.labels.mongo.replica == 2' ]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+        window: 120s
     networks: [ mongo ]
     volumes:
       - mongodata2:/data/db
@@ -52,9 +62,14 @@ services:
     image: mongo:3.6
     network: mongo
     deploy:
-      replicas: 1
+      mode: global
       placement:
         constraints: [ 'node.labels.mongo.replica == 3' ]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+        window: 120s
     networks: [ mongo ]
     volumes:
       - mongodata3:/data/db

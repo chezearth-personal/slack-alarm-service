@@ -1,4 +1,4 @@
-version: "2"
+version: "3"
 
 services:
 
@@ -15,7 +15,7 @@ services:
       - network
 
   rest-api:
-    image: node-api
+    image: node-api:latest
     build:
       context: .
       dockerfile: Dockerfile-api
@@ -30,7 +30,7 @@ services:
       - network
 
   alarm-server:
-    image: node-alarm
+    image: node-alarm:latest
     build:
       context: .
       dockerfile: Dockerfile-alarm
