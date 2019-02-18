@@ -36,21 +36,16 @@ async function swaggerCreate(): Promise<void> {
 
     if (err) { throw err; }
 
-
     // unless in test env, use morgan to log requests
     if (env !== 'test') {
       app.use(morgan(`MORGAN:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time[digits]ms`, { stream: logger }));
     }
 
-
     // install middleware
     swaggerExpress.register(app);
-
-
     // start listening
     const port: string | number = process.env.PORT || 3000;
     app.listen(port);
-
 
     // Start up message
     if (env !== 'test') logger.write(`"Server started and listening on localhost:${port}" "${env} environment"`);

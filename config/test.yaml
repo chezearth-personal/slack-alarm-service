@@ -1,4 +1,4 @@
-mongoUrl: mongodb://127.0.0.1:27017
+# mongoUrl: mongodb://127.0.0.1:27017
 database: testAlarmServer
 database_connection_retries: 1
 database_connection_wait: 1000

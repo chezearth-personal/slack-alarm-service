@@ -4,7 +4,6 @@ import * as chai from 'chai';
 
 import { AlarmDb } from '../../common/types/docs';
 import { getNewAlarms, removeAll } from '../../../dist/alarm/controllers/alarms';
-import { } from ''
 import { getMany } from '../../../dist/common/db/crud';
 
 
