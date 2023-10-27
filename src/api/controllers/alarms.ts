@@ -39,19 +39,22 @@ export async function createAlarm(req, res, next): Promise<void> {
       .status(201)
       .type('application/json')
       .json(resPayload)
-      .end()
+      .end();
 
   } catch(e) {
 
-    logger.write(`"${e.message}" 400
-${e.stack}`,"error")
+    logger.write(
+			`"${e.message}" 400
+${e.stack}`,"error"
+		);
     res
       .status(400)
       .type('application/json')
       .json(Object.assign({ message: e.message }, e))
-      .end()
+      .end();
+    Promise.reject(e);
 
-  }
+	}
 
 }
 
@@ -77,13 +80,16 @@ export async function getAllAlarms(req, res, next): Promise<void> {
 
   } catch(e) {
 
-    logger.write(`"${e.message}" "${e.status}"
-${e.stack}`,"error")
+    logger.write(
+			`"${e.message}" "${e.status}"
+${e.stack}`,"error"
+		);
     res
       .status(404)
       .type('application/json')
       .json(e)
       .end();
+		Promise.reject(e);
 
   }
 
@@ -111,13 +117,18 @@ export async function getAlarmDetails(req, res, next): Promise<void> {
 
   } catch(e) {
 
-    logger.write(`"${e.message}" "${e.status}"
-${e.stack}`,"error")
+    logger.write(
+			`"${e.message}" "${e.status}"
+${e.stack}`,"error"
+		);
     res
       .status(404)
       .type('application/json')
       .json(e)
       .end();
+		Promise.reject(e);
 
   }
+
 }
+

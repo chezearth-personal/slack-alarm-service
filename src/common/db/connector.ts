@@ -26,7 +26,9 @@ export async function connectDb(dbConnect: DbConnect): Promise<Db> {
 
 export async function dbConnection(dbConfig: DbConfig): Promise<Db> {
 
-  if(dbConfig.env !== 'test') logger.write(`"Attempt ${dbConfig.count + 1} connecting to database: ${dbConfig.url}" "${dbConfig.env} environment"`);
+  if(dbConfig.env !== 'test') logger.write(
+		`"Attempt ${dbConfig.count + 1} connecting to database: ${dbConfig.url}" "${dbConfig.env} environment"`
+	);
 
   try {
     const dbConnect = {
@@ -44,10 +46,14 @@ export async function dbConnection(dbConfig: DbConfig): Promise<Db> {
   } catch(e) {
 
     if(dbConfig.retries && dbConfig.count + 1 < dbConfig.retries) {
-      const dbConfigNew: DbConfig = Object.assign({}, dbConfig, {count: dbConfig.count + 1})
+      const dbConfigNew: DbConfig = Object.assign({}, dbConfig, {count: dbConfig.count + 1});
+			Promise.reject(e);
       return await dbConnection(dbConfigNew);
     } else {
-      logger.write(`"Server failed to connect to database: ${dbConfig.url}" "${dbConfig.env} environment"`, "error");
+      logger.write(
+				`"Server failed to connect to database: ${dbConfig.url}" "${dbConfig.env} environment"`, "error"
+			);
+			Promise.reject(e);
       process.exit(1);
     }
 
